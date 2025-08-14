@@ -1,4 +1,4 @@
-package dev.lqwd.weatherviewer;
+package dev.lqwd;
 
 import java.io.*;
 
