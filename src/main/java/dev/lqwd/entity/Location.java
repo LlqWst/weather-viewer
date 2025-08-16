@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigDecimal;
+
 
 @Builder
 @AllArgsConstructor
@@ -27,10 +29,14 @@ public class Location {
     @NonNull
     private User user;
 
-    @Column(nullable = false)
-    private double latitude;
+    @Column(precision = 9,
+            scale = 6,
+            columnDefinition = "NUMERIC(9,6) CHECK (latitude BETWEEN -90 AND 90)")
+    private BigDecimal latitude;
 
-    @Column(nullable = false)
-    private double longitude;
+    @Column(precision = 10,
+            scale = 6,
+            columnDefinition = "NUMERIC(9,6) CHECK (latitude BETWEEN -180 AND 180)")
+    private BigDecimal longitude;
 
 }

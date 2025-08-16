@@ -2,8 +2,11 @@ package dev.lqwd.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,7 +20,8 @@ import java.util.UUID;
 public class Session {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
+    @JdbcType(UUIDJdbcType.class)
     private UUID id;
 
     @ManyToOne(optional = false)
@@ -26,7 +30,7 @@ public class Session {
     @NonNull
     private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "expires_at")
     private final LocalDateTime expiresAt = LocalDateTime.now();
 
 }
