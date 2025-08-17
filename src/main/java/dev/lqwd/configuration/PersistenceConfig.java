@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -20,8 +21,9 @@ import java.util.Properties;
 @Slf4j
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(basePackages = "dev.lqwd.repository")
-@PropertySource("classpath:db.properties")
+@EnableJpaRepositories("dev.lqwd.repository")
+@ComponentScan("dev.lqwd.service")
+@PropertySource("classpath:app.properties")
 public class PersistenceConfig {
 
     @Bean
@@ -51,6 +53,7 @@ public class PersistenceConfig {
 
         }
 
+
         HikariConfig hikariConfig = new HikariConfig();
 
         hikariConfig.setJdbcUrl(url);
@@ -63,6 +66,8 @@ public class PersistenceConfig {
         hikariConfig.setIdleTimeout(idleTimeout);
         hikariConfig.setConnectionTimeout(connectionTimeout);
         hikariConfig.setMaxLifetime(maxLifetime);
+
+        log.info("HikariCP Config: {}", hikariConfig);
 
         return new HikariDataSource(hikariConfig);
     }
@@ -78,7 +83,6 @@ public class PersistenceConfig {
                 .dataSource(dataSource)
                 .locations(locations)
                 .validateOnMigrate(isValidateOnMigrate)
-                //.createSchemas(true)
                 .schemas(schema)
                 .load();
 
@@ -86,7 +90,7 @@ public class PersistenceConfig {
 
     @Bean
     @DependsOn("flyway")
-    public LocalContainerEntityManagerFactoryBean sessionFactory(
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
             DataSource dataSource,
             @Qualifier("properties") Properties hibernateProperties) {
 
@@ -102,14 +106,12 @@ public class PersistenceConfig {
 
     @Bean
     public Properties properties(
-            @Value("${hibernate.dialect}") String dialect,
             @Value("${hibernate.show_sql}") boolean isShowSql,
             @Value("${hibernate.format_sql}") boolean isFormatSql,
             @Value("${hibernate.hbm2ddl.auto}") String hbm2ddl) {
 
         Properties properties = new Properties();
 
-        //properties.put("hibernate.dialect", dialect);
         properties.put("hibernate.show_sql", isShowSql);
         properties.put("hibernate.format_sql", isFormatSql);
         properties.put("hibernate.hbm2ddl.auto", hbm2ddl);
@@ -131,6 +133,8 @@ public class PersistenceConfig {
         transactionManager.setEntityManagerFactory(containerEntityManagerFactory.getObject());
 
         return transactionManager;
+
+
 
     }
 

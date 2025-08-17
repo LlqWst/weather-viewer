@@ -1,9 +1,11 @@
 package dev.lqwd.configuration;
 
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.*;
@@ -11,25 +13,53 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
-import org.thymeleaf.templatemode.TemplateMode;
 import java.util.List;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "dev.lqwd.controllers")
+@PropertySource("classpath:app.properties")
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private static final int FIRST_INDEX = 0;
+
+    @Value("${webMvc.corsRegistry.methods}")
+    private String[] allowedMethods;
+
+    @Value("${webMvc.corsRegistry.registryMapping}")
+    private String registryMapping;
+
+    @Value("${webMvc.corsRegistry.origins}")
+    private String[] origins;
+
+    @Value("${webMvc.encoding}")
+    private String encoding;
+
+    @Value("${webMvc.templateMode}")
+    private String templateMode;
+
+    @Value("${webMvc.suffix}")
+    private String suffix;
+
+    @Value("${webMvc.prefix}")
+    private String prefix;
+
+    @Value("${webMvc.isCacheable}")
+    private boolean isCacheable;
+
+    @Value("${webMvc.isSpringELCompiler}")
+    private boolean isSpringELCompiler;
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
 
-        //ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
 
-        templateResolver.setPrefix("classpath:/templates/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setCacheable(false);
+        templateResolver.setPrefix(prefix);
+        templateResolver.setSuffix(suffix);
+        templateResolver.setTemplateMode(templateMode);
+        templateResolver.setCharacterEncoding(encoding);
+        templateResolver.setCacheable(isCacheable);
 
         return templateResolver;
     }
@@ -39,7 +69,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.setEnableSpringELCompiler(true);
+        templateEngine.setEnableSpringELCompiler(isSpringELCompiler);
 
         return templateEngine;
     }
@@ -49,16 +79,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
-        viewResolver.setCharacterEncoding("UTF-8");
+        viewResolver.setCharacterEncoding(encoding);
 
         return viewResolver;
     }
 
     @Override
     public void configureDefaultServletHandling(@NonNull DefaultServletHandlerConfigurer configurer) {
-
         configurer.enable();
-
     }
 
     @Override
@@ -67,18 +95,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void configureMessageConverters(@NonNull List<HttpMessageConverter<?>> converters) {
-
-        converters.add(new MappingJackson2HttpMessageConverter());
-
+    public void extendMessageConverters(@NonNull List<HttpMessageConverter<?>> converters) {
+        converters.add(FIRST_INDEX, new MappingJackson2HttpMessageConverter());
     }
 
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
 
-        registry.addMapping("weather-viewer/**")
-                .allowedOrigins("http://localhost:8080")
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
+        registry.addMapping(registryMapping)
+                .allowedOrigins(origins)
+                .allowedMethods(allowedMethods);
 
     }
 }

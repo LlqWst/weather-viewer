@@ -25,9 +25,8 @@ public class Session {
     private UUID id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(nullable = false, name = "user_id")
     @OnDelete(action = OnDeleteAction.NO_ACTION)
-    @NonNull
     private User user;
 
     @Column(nullable = false, name = "expires_at")
