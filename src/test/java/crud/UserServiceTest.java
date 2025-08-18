@@ -1,6 +1,6 @@
 package crud;
 
-import dev.lqwd.configuration.PersistenceConfig;
+import config.TestPersistenceConfig;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -8,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes =  {PersistenceConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class})
+@ActiveProfiles("test")
 @Transactional
 public class UserServiceTest {
 
@@ -30,8 +32,8 @@ public class UserServiceTest {
     public void test1() {
 
         User user = User.builder()
-                .login("707")
-                .password("321")
+                .login("test")
+                .password("test")
                 .build();
 
         entityManager.persist(user);

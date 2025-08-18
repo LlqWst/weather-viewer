@@ -7,7 +7,6 @@ import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -19,19 +18,13 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Slf4j
+@Profile("dev")
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories("dev.lqwd.repository")
 @ComponentScan("dev.lqwd.service")
 @PropertySource("classpath:app.properties")
-public class PersistenceConfig {
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-
-        return new PropertySourcesPlaceholderConfigurer();
-
-    }
+public class DevPersistenceConfig {
 
     @Bean
     public DataSource dataSource(
@@ -45,14 +38,10 @@ public class PersistenceConfig {
             @Value("${hibernate.hikari.connectionTimeout}") int connectionTimeout,
             @Value("${hibernate.hikari.maxLifetime}") int maxLifetime) {
 
-
         if (user.isEmpty() || password.isEmpty()) {
-
             log.error("Database credentials not set");
             throw new IllegalStateException("Database credentials not set");
-
         }
-
 
         HikariConfig hikariConfig = new HikariConfig();
 

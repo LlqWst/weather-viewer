@@ -1,17 +1,14 @@
 package crud;
 
-import dev.lqwd.configuration.PersistenceConfig;
+import config.TestPersistenceConfig;
 import dev.lqwd.entity.Location;
-import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.LocationRepository;
-import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +19,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes =  {PersistenceConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class})
+@ActiveProfiles("test")
 @Transactional
 public class LocationServiceTest {
 
     @Autowired
     LocationRepository locationRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private UserRepository userRepository;
@@ -38,17 +33,22 @@ public class LocationServiceTest {
     @Test
     public void test1() {
 
-        User user = userRepository.findById(1).orElseThrow();
+        User user = User.builder()
+                .login("test")
+                .password("test")
+                .build();
+
+        User savedUser = userRepository.findById(1)
+                .orElseGet(() -> userRepository.save(user));
 
         Location location = Location.builder()
                 .name("SpB")
                 .latitude(BigDecimal.valueOf(61.999))
                 .longitude(BigDecimal.valueOf(124.999))
-                .user(user)
+                .user(savedUser)
                 .build();
 
-        entityManager.persist(location);
-        entityManager.flush();
+        locationRepository.save(location);
 
         Location found = locationRepository.findById(location.getId()).orElseThrow();
 

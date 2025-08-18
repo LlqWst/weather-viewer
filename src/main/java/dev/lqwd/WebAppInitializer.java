@@ -1,15 +1,24 @@
 package dev.lqwd;
 
-import dev.lqwd.configuration.PersistenceConfig;
+import dev.lqwd.configuration.DevPersistenceConfig;
 import dev.lqwd.configuration.WebMvcConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import lombok.NonNull;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+
+        servletContext.setInitParameter("spring.profiles.active", "dev");
+        super.onStartup(servletContext);
+    }
+
+    @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[] { PersistenceConfig.class };
+        return new Class[] { DevPersistenceConfig.class};
     }
 
     @Override
