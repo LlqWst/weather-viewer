@@ -123,8 +123,6 @@ public class DevPersistenceConfig {
 
         return transactionManager;
 
-
-
     }
 
 }

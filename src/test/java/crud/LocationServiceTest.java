@@ -5,6 +5,11 @@ import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.LocationRepository;
 import dev.lqwd.repository.UserRepository;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.hibernate.dialect.function.AvgFunction;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @Transactional
 public class LocationServiceTest {
+
 
     @Autowired
     LocationRepository locationRepository;

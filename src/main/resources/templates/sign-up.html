@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Registry</title>
+    </head>
+    <body>
+        <h1>Registry</h1>
+
+        <span th:if="${error}" th:text="${error}" style="color: red; font-size: 10px"></span>
+        <br>
+
+        <form th:action="@{/sign-up}" th:object="${userCreationRequest}" method="post">
+            <br>
+            <label>
+                <span th:if="${#fields.hasErrors('login')}" th:errors="*{login}" style="color: red; font-size: 10px"></span>
+                <br>
+                <input th:field="*{login}" placeholder="login">
+                <br>
+
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red; font-size: 10px"></span>
+                <br>
+
+                <input type="password" th:field="*{password}" placeholder="pass">
+                <br>
+                <br>
+
+                <input type="password" th:field="*{passwordConfirm}" placeholder="confirm pass">
+                <br>
+
+            </label>
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+
+    </body>
+</html>
