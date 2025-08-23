@@ -30,7 +30,7 @@ public class TestPersistenceConfig {
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
+    
     @Bean
     public DataSource dataSource() {
         return new EmbeddedDatabaseBuilder()

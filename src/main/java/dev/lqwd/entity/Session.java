@@ -19,10 +19,6 @@ import java.util.UUID;
 @Table(name = "sessions", schema = "weather_viewer")
 public class Session {
 
-    public Session(User user) {
-        this.user = user;
-    }
-
     @Id
     @GeneratedValue
     @JdbcType(UUIDJdbcType.class)
@@ -34,6 +30,6 @@ public class Session {
     private User user;
 
     @Column(nullable = false, name = "expires_at")
-    private final LocalDateTime expiresAt = LocalDateTime.now();
+    private final LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(30);
 
 }

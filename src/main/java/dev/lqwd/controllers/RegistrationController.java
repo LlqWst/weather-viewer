@@ -1,8 +1,10 @@
 package dev.lqwd.controllers;
 
+import dev.lqwd.BCryptUtil;
 import dev.lqwd.dto.UserCreationRequestDto;
 import dev.lqwd.entity.User;
 import dev.lqwd.mapper.UserMapper;
+import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,19 +13,31 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 
 @Controller
 public class RegistrationController {
 
-    UserRepository userRepository;
-    UserMapper userMapper = UserMapper.INSTANCE;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper = UserMapper.INSTANCE;
+    private final SessionRepository sessionRepository;
 
-    public RegistrationController(UserRepository userRepository) {
+    public RegistrationController(UserRepository userRepository, SessionRepository sessionRepository) {
         this.userRepository = userRepository;
+        this.sessionRepository = sessionRepository;
     }
 
     @GetMapping("/sign-up")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm(
+        Model model,
+        @CookieValue(value = "sessionId", required = false) UUID sessionId) {
+
+            if(sessionId != null
+               && sessionRepository.findById(sessionId).isPresent()){
+
+                return "redirect:/home";
+            }
 
         model.addAttribute("userCreationRequest", new UserCreationRequestDto());
         return "sign-up";
@@ -40,6 +54,7 @@ public class RegistrationController {
             && !creationRequest.getPassword().equals(creationRequest.getPasswordConfirm())){
 
             model.addAttribute("error", "Passwords don't match");
+            return "sign-up";
         }
 
         if(bindingResult.hasErrors()){
@@ -49,7 +64,13 @@ public class RegistrationController {
 
         try {
 
-            User user = userRepository.save(userMapper.toUser(creationRequest));
+            String hashedPassword = BCryptUtil.getHashPassword(creationRequest.getPassword());
+
+            User user = userRepository.save(User.builder()
+                    .login(creationRequest.getLogin())
+                    .password(hashedPassword)
+                    .build());
+
             System.out.println(user);
         } catch (DataIntegrityViolationException e){
 
