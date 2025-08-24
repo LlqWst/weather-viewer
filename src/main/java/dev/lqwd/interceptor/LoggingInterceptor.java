@@ -26,6 +26,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
         String session = getSessionId(request.getCookies());
 
         if (session.isBlank()){
+
             response.sendRedirect("/weather-viewer/sign-in");
             return false;
         }
