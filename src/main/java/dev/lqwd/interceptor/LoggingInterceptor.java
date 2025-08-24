@@ -1,21 +1,24 @@
 package dev.lqwd.interceptor;
 
+import dev.lqwd.service.CookieService;
 import dev.lqwd.service.SessionService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class LoggingInterceptor implements HandlerInterceptor {
 
     private final SessionService sessionService;
+    private final CookieService cookieService;
 
-    public LoggingInterceptor(SessionService sessionService) {
+    public LoggingInterceptor(SessionService sessionService, CookieService cookieService) {
         this.sessionService = sessionService;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -23,39 +26,21 @@ public class LoggingInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
 
-        String session = getSessionId(request.getCookies());
+        Optional <UUID> sessionId = cookieService.getSessionId(request);
 
-        if (session.isBlank()){
+        if (sessionId.isEmpty()){
 
             response.sendRedirect("/weather-viewer/sign-in");
             return false;
         }
 
-        UUID sessionId = UUID.fromString(session);
-
-        if (!sessionService.isPresent(sessionId)) {
+        if (!sessionService.isPresent(sessionId.get())) {
 
             response.sendRedirect("/weather-viewer/sign-in");
             return false;
         }
 
         return true;
-    }
-
-
-    private static String getSessionId(Cookie[] cookies){
-        if (cookies == null){
-            return "";
-        }
-
-        for(Cookie cookie : cookies){
-            if(cookie.getName().equals("sessionId")) {
-                return cookie.getValue();
-            }
-        }
-
-        return "";
-
     }
 
 }

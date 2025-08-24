@@ -26,17 +26,16 @@ public class RegistrationController {
 
     @GetMapping("/sign-up")
     public String showRegistrationForm(
-        Model model,
-        @CookieValue(value = "sessionId", required = false) UUID sessionId) {
+            Model model,
+            @CookieValue(value = "sessionId", required = false) UUID sessionId) {
 
-            if(sessionService.isPresent(sessionId)){
 
-                return "redirect:/home";
-            }
+        if (sessionService.isPresent(sessionId)) {
+            return "redirect:/home";
+        }
 
         model.addAttribute("userCreationRequest", new UserCreationRequestDto());
         return "sign-up";
-
     }
 
     @PostMapping("/sign-up")
@@ -45,21 +44,21 @@ public class RegistrationController {
                                Model model) {
 
 
-        if (!doPasswordsMatch(creationRequest)){
+        if (!doPasswordsMatch(creationRequest)) {
 
             model.addAttribute("error", "Passwords don't match");
             return "sign-up";
         }
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
 
             return "sign-up";
         }
 
         try {
+            userService.save(creationRequest);
 
-           userService.save(creationRequest);
-        } catch (UserAlreadyExistException e){
+        } catch (UserAlreadyExistException e) {
 
             model.addAttribute("error", e.getMessage());
             return "sign-up";

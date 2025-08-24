@@ -11,16 +11,18 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
 @Slf4j
 public class SessionService {
 
+    private static final int SESSION_VALIDATION_INTERVAL_MS = 10 * 60 * 1000;
+
     private final SessionRepository sessionRepository;
 
     public SessionService(SessionRepository sessionRepository) {
-
         this.sessionRepository = sessionRepository;
     }
 
@@ -48,7 +50,6 @@ public class SessionService {
     public void delete(UUID sessionId){
 
         if (isPresent(sessionId)) {
-
             sessionRepository.deleteById(sessionId);
         }
 
@@ -64,7 +65,7 @@ public class SessionService {
          return LocalDateTime.now().isAfter(expiresAt);
     }
 
-    @Scheduled(fixedRate = 10 * 30 * 1000)
+    @Scheduled(fixedRate = SESSION_VALIDATION_INTERVAL_MS)
     public void cleanupExpiredSessions() {
 
         LocalDateTime now = LocalDateTime.now();

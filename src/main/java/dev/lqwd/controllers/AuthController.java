@@ -1,6 +1,7 @@
 package dev.lqwd.controllers;
 
 import dev.lqwd.exception.DataBaseException;
+import dev.lqwd.service.CookieService;
 import dev.lqwd.service.CryptService;
 import dev.lqwd.dto.AuthRequestDto;
 import dev.lqwd.entity.User;
@@ -24,11 +25,17 @@ public class AuthController {
     private final UserService userService;
     private final SessionService sessionService;
     private final CryptService cryptService;
+    private final CookieService cookieService;
 
-    public AuthController(UserService userService, SessionService sessionService, CryptService cryptService) {
+    public AuthController(UserService userService,
+                          SessionService sessionService,
+                          CryptService cryptService,
+                          CookieService cookieService) {
+
         this.userService = userService;
         this.sessionService = sessionService;
         this.cryptService = cryptService;
+        this.cookieService = cookieService;
     }
 
 
@@ -43,8 +50,7 @@ public class AuthController {
             Model model,
             @CookieValue(value = "sessionId", required = false) UUID sessionId) {
 
-        if(sessionService.isPresent(sessionId)){
-
+        if (sessionService.isPresent(sessionId)) {
             return "redirect:home";
         }
 
@@ -60,7 +66,7 @@ public class AuthController {
                                Model model) {
 
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
 
             model.addAttribute("error", "Invalid username or password");
             return "sign-in";
@@ -68,17 +74,14 @@ public class AuthController {
 
         Optional<User> user = userService.readByLogin(authRequest.getLogin());
 
-        if(isIncorrectCredentials(authRequest, user)){
+        if (isIncorrectCredentials(authRequest, user)) {
 
             model.addAttribute("error", "Invalid username or password");
             return "sign-in";
         }
 
         String sessionId = sessionService.create(user.get());
-
-        Cookie cookie = new Cookie("sessionId", sessionId);
-        cookie.setMaxAge(60 * 30);
-        response.addCookie(cookie);
+        response.addCookie(cookieService.create(sessionId));
 
         return "redirect:home";
     }
@@ -89,16 +92,15 @@ public class AuthController {
             HttpServletResponse response) {
 
         sessionService.delete(sessionId);
-        Cookie cookie = new Cookie("sessionId", "");
-        cookie.setMaxAge(0);
 
-        response.addCookie(cookie);
+        response.addCookie(cookieService.delete());
 
         return "redirect:sign-in";
     }
 
     private boolean isIncorrectCredentials(AuthRequestDto authRequest, Optional<User> user) {
-        return user.isEmpty() || !cryptService.verifyPassword(authRequest.getPassword(), user.get().getPassword());
+        return user.isEmpty()
+               || !cryptService.verifyPassword(authRequest.getPassword(), user.get().getPassword());
     }
 
 }

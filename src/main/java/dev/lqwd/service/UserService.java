@@ -21,12 +21,12 @@ public class UserService {
     }
 
 
-    public Optional<User> readByLogin(String login){
+    public Optional<User> readByLogin(String login) {
 
         return userRepository.findByLogin(login);
     }
 
-    public User save(UserCreationRequestDto creationRequest){
+    public User save(UserCreationRequestDto creationRequest) {
 
         String hashedPassword = cryptService.getHashPassword(creationRequest.getPassword());
 
@@ -36,7 +36,7 @@ public class UserService {
                     .password(hashedPassword)
                     .build());
 
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
 
             throw new UserAlreadyExistException("User already exist");
         }
