@@ -1,13 +1,10 @@
 package dev.lqwd.controllers;
 
-import dev.lqwd.BCryptUtil;
+import dev.lqwd.exception.UserAlreadyExistException;
 import dev.lqwd.dto.UserCreationRequestDto;
-import dev.lqwd.entity.User;
-import dev.lqwd.mapper.UserMapper;
-import dev.lqwd.repository.SessionRepository;
-import dev.lqwd.repository.UserRepository;
+import dev.lqwd.service.SessionService;
+import dev.lqwd.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,13 +16,12 @@ import java.util.UUID;
 @Controller
 public class RegistrationController {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper = UserMapper.INSTANCE;
-    private final SessionRepository sessionRepository;
+    private final UserService userService;
+    private final SessionService sessionService;
 
-    public RegistrationController(UserRepository userRepository, SessionRepository sessionRepository) {
-        this.userRepository = userRepository;
-        this.sessionRepository = sessionRepository;
+    public RegistrationController(UserService userService, SessionService sessionService) {
+        this.userService = userService;
+        this.sessionService = sessionService;
     }
 
     @GetMapping("/sign-up")
@@ -33,8 +29,7 @@ public class RegistrationController {
         Model model,
         @CookieValue(value = "sessionId", required = false) UUID sessionId) {
 
-            if(sessionId != null
-               && sessionRepository.findById(sessionId).isPresent()){
+            if(sessionService.isPresent(sessionId)){
 
                 return "redirect:/home";
             }
@@ -50,8 +45,7 @@ public class RegistrationController {
                                Model model) {
 
 
-        if (creationRequest.getPassword() != null && creationRequest.getPasswordConfirm() != null
-            && !creationRequest.getPassword().equals(creationRequest.getPasswordConfirm())){
+        if (!doPasswordsMatch(creationRequest)){
 
             model.addAttribute("error", "Passwords don't match");
             return "sign-up";
@@ -64,21 +58,18 @@ public class RegistrationController {
 
         try {
 
-            String hashedPassword = BCryptUtil.getHashPassword(creationRequest.getPassword());
+           userService.save(creationRequest);
+        } catch (UserAlreadyExistException e){
 
-            User user = userRepository.save(User.builder()
-                    .login(creationRequest.getLogin())
-                    .password(hashedPassword)
-                    .build());
-
-            System.out.println(user);
-        } catch (DataIntegrityViolationException e){
-
-            model.addAttribute("error", "User already exist");
+            model.addAttribute("error", e.getMessage());
             return "sign-up";
         }
 
         return "redirect:/";
     }
-    
+
+    private static boolean doPasswordsMatch(UserCreationRequestDto creationRequest) {
+        return creationRequest.getPassword().equals(creationRequest.getPasswordConfirm());
+    }
+
 }

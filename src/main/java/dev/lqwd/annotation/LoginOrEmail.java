@@ -1,4 +1,4 @@
-package dev.lqwd.validator;
+package dev.lqwd.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

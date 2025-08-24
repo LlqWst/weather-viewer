@@ -1,6 +1,7 @@
 package dev.lqwd.dto;
 
-import jakarta.validation.constraints.NotNull;
+import dev.lqwd.annotation.LoginOrEmail;
+import dev.lqwd.annotation.StrongPassword;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class AuthRequestDto {
 
-    @NotNull
+    @LoginOrEmail
     private String login;
 
-    @NotNull
+    @StrongPassword
     private String password;
 
 }

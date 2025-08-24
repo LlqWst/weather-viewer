@@ -1,7 +1,7 @@
 package dev.lqwd.dto;
 
-import dev.lqwd.validator.LoginOrEmail;
-import dev.lqwd.validator.StrongPassword;
+import dev.lqwd.annotation.LoginOrEmail;
+import dev.lqwd.annotation.StrongPassword;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

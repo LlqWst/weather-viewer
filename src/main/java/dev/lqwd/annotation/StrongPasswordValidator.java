@@ -1,10 +1,10 @@
-package dev.lqwd.validator;
+package dev.lqwd.annotation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 
-public class PasswordValidator implements ConstraintValidator<StrongPassword, String> {
+public class StrongPasswordValidator implements ConstraintValidator<StrongPassword, String> {
 
     private int min;
     private int max;
