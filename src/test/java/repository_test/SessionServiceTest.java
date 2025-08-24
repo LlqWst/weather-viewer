@@ -1,10 +1,10 @@
-package crud;
+package repository_test;
 
 import config.TestPersistenceConfig;
+import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
+import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,36 +13,44 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestPersistenceConfig.class})
 @ActiveProfiles("test")
 @Transactional
-public class UserServiceTest {
+public class SessionServiceTest {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    SessionRepository sessionRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    public void test1() {
+    public void should_createSession_and_findSession() {
 
         User user = User.builder()
                 .login("test")
                 .password("test")
                 .build();
 
-        entityManager.persist(user);
-        entityManager.flush();
+        User savedUser = userRepository.findById(1)
+                .orElseGet(() -> userRepository.save(user));
 
-        User found = userRepository.findById(user.getId()).orElseThrow();
+
+        Session session = Session.builder()
+                .user(savedUser)
+                .build();
+
+        sessionRepository.save(session);
+
+        Session found = sessionRepository.findById(session.getId()).orElseThrow();
 
         System.out.println(found);
-        assertNotNull(found);
+        assertEquals(session, found);
 
     }
+
 }

@@ -57,6 +57,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${webMvc.isSpringELCompiler}")
     private boolean isSpringELCompiler;
 
+    public WebMvcConfig(LoggingInterceptor loggingInterceptor) {
+        this.loggingInterceptor = loggingInterceptor;
+    }
+
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();
@@ -69,17 +73,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final LoggingInterceptor loggingInterceptor;
 
-    public WebMvcConfig(LoggingInterceptor loggingInterceptor) {
-        this.loggingInterceptor = loggingInterceptor;
-    }
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loggingInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/sign-in", "/sign-up", "/");
     }
-
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {

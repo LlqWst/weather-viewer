@@ -29,7 +29,6 @@ public class RegistrationController {
             Model model,
             @CookieValue(value = "sessionId", required = false) UUID sessionId) {
 
-
         if (sessionService.isPresent(sessionId)) {
             return "redirect:/home";
         }
@@ -39,10 +38,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/sign-up")
-    public String authCreation(@Valid @ModelAttribute("userCreationRequest") UserCreationRequestDto creationRequest,
+    public String registration(@Valid @ModelAttribute("userCreationRequest") UserCreationRequestDto creationRequest,
                                BindingResult bindingResult,
                                Model model) {
-
 
         if (!doPasswordsMatch(creationRequest)) {
 

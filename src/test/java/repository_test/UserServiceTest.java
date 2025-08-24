@@ -1,10 +1,10 @@
-package crud;
+package repository_test;
 
 import config.TestPersistenceConfig;
-import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
-import dev.lqwd.repository.LocationRepository;
 import dev.lqwd.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,48 +13,36 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestPersistenceConfig.class})
 @ActiveProfiles("test")
 @Transactional
-public class LocationServiceTest {
+public class UserServiceTest {
 
-
-    @Autowired
-    LocationRepository locationRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
-    public void test1() {
+    public void should_createUser_and_findUser() {
 
         User user = User.builder()
                 .login("test")
                 .password("test")
                 .build();
 
-        User savedUser = userRepository.findById(1)
-                .orElseGet(() -> userRepository.save(user));
+        entityManager.persist(user);
+        entityManager.flush();
 
-        Location location = Location.builder()
-                .name("SpB")
-                .latitude(BigDecimal.valueOf(61.999))
-                .longitude(BigDecimal.valueOf(124.999))
-                .user(savedUser)
-                .build();
-
-        locationRepository.save(location);
-
-        Location found = locationRepository.findById(location.getId()).orElseThrow();
+        User found = userRepository.findById(user.getId()).orElseThrow();
 
         System.out.println(found);
-        assertEquals(location, found);
+        assertNotNull(found);
 
     }
 }

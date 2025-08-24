@@ -1,18 +1,14 @@
 package dev.lqwd.controllers;
 
-import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.service.CookieService;
 import dev.lqwd.service.CryptService;
 import dev.lqwd.dto.AuthRequestDto;
 import dev.lqwd.entity.User;
 import dev.lqwd.service.SessionService;
 import dev.lqwd.service.UserService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -46,7 +42,7 @@ public class AuthController {
     }
 
     @GetMapping({"/sign-in"})
-    public String showRegistrationForm(
+    public String showSignInForm(
             Model model,
             @CookieValue(value = "sessionId", required = false) UUID sessionId) {
 
@@ -60,17 +56,9 @@ public class AuthController {
     }
 
     @PostMapping("/sign-in")
-    public String authCreation(@Valid @ModelAttribute("authRequest") AuthRequestDto authRequest,
-                               BindingResult bindingResult,
+    public String authValidation(@ModelAttribute("authRequest") AuthRequestDto authRequest,
                                HttpServletResponse response,
                                Model model) {
-
-
-        if (bindingResult.hasErrors()) {
-
-            model.addAttribute("error", "Invalid username or password");
-            return "sign-in";
-        }
 
         Optional<User> user = userService.readByLogin(authRequest.getLogin());
 

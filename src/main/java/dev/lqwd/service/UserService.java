@@ -23,6 +23,10 @@ public class UserService {
 
     public Optional<User> readByLogin(String login) {
 
+        if (login == null || login.isBlank()){
+            return Optional.empty();
+        }
+
         return userRepository.findByLogin(login);
     }
 
@@ -31,6 +35,7 @@ public class UserService {
         String hashedPassword = cryptService.getHashPassword(creationRequest.getPassword());
 
         try {
+
             return userRepository.save(User.builder()
                     .login(creationRequest.getLogin())
                     .password(hashedPassword)
