@@ -43,10 +43,4 @@ public class UserService {
 
     }
 
-    public boolean isUserAuthenticated(){
-
-        return true;
-    }
-
-
 }

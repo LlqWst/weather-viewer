@@ -1,5 +1,6 @@
 package dev.lqwd.controllers;
 
+import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.service.CryptService;
 import dev.lqwd.dto.AuthRequestDto;
 import dev.lqwd.entity.User;
@@ -11,10 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +31,14 @@ public class AuthController {
         this.cryptService = cryptService;
     }
 
-    @GetMapping("/sign-in")
+
+    @GetMapping({"/"})
+    public String index() {
+
+        return "redirect:sign-in";
+    }
+
+    @GetMapping({"/sign-in"})
     public String showRegistrationForm(
             Model model,
             @CookieValue(value = "sessionId", required = false) UUID sessionId) {
@@ -72,9 +77,24 @@ public class AuthController {
         String sessionId = sessionService.create(user.get());
 
         Cookie cookie = new Cookie("sessionId", sessionId);
+        cookie.setMaxAge(60 * 30);
         response.addCookie(cookie);
 
         return "redirect:home";
+    }
+
+    @PostMapping("/sign-out")
+    public String logout(
+            @CookieValue(value = "sessionId", required = false) UUID sessionId,
+            HttpServletResponse response) {
+
+        sessionService.delete(sessionId);
+        Cookie cookie = new Cookie("sessionId", "");
+        cookie.setMaxAge(0);
+
+        response.addCookie(cookie);
+
+        return "redirect:sign-in";
     }
 
     private boolean isIncorrectCredentials(AuthRequestDto authRequest, Optional<User> user) {

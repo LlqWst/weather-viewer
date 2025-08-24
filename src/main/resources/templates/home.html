@@ -2,12 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
     <head>
         <meta charset="UTF-8">
-        <title>Home</title>
+        <title>home</title>
     </head>
 
     <body>
         <h1>Привет, это Home page</h1>
 
-        <a th:href="@{/sign-in}">Sign-in</a>
+        <form th:action="@{/sign-out}" method="post" style="display: inline;">
+            <button type="submit" class="btn btn-link p-0">Logout</button>
+        </form>
     </body>
 </html>

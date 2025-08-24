@@ -1,5 +1,6 @@
 package dev.lqwd.configuration;
 
+import dev.lqwd.interceptor.LoggingInterceptor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,11 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "dev.lqwd.controllers")
+@ComponentScan({
+        "dev.lqwd.controllers",
+        "dev.lqwd.interceptor",
+        "dev.lqwd.exception_handler"
+})
 @PropertySource("classpath:app.properties")
 public class WebMvcConfig implements WebMvcConfigurer {
 
@@ -61,6 +66,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public Validator getValidator() {
         return validator();
     }
+
+    private final LoggingInterceptor loggingInterceptor;
+
+    public WebMvcConfig(LoggingInterceptor loggingInterceptor) {
+        this.loggingInterceptor = loggingInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(loggingInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/sign-in", "/sign-up", "/");
+    }
+
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {

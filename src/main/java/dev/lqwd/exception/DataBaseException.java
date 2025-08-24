@@ -5,7 +5,4 @@ public class DataBaseException extends RuntimeException {
         super(message);
     }
 
-    public DataBaseException() {
-        super();
-    }
 }

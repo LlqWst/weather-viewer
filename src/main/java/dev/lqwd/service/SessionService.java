@@ -26,7 +26,7 @@ public class SessionService {
                 sessionRepository.save(Session.builder()
                 .user(user)
                 .build()))
-                .orElseThrow(DataBaseException::new);
+                .orElseThrow(() -> new DataBaseException("Error during save user"));
 
         return session.getId().toString();
     }
@@ -38,6 +38,18 @@ public class SessionService {
         }
 
         return sessionRepository.findById(sessionId).isPresent();
+    }
+
+
+    public boolean delete(UUID sessionId){
+
+        if (isPresent(sessionId)) {
+
+            sessionRepository.deleteById(sessionId);
+            return true;
+        }
+
+        throw new DataBaseException("Error during deletion of session");
     }
 
 }
