@@ -28,13 +28,7 @@ public class LoggingInterceptor implements HandlerInterceptor {
 
         Optional <UUID> sessionId = cookieService.getSessionId(request);
 
-        if (sessionId.isEmpty()){
-
-            response.sendRedirect("/weather-viewer/sign-in");
-            return false;
-        }
-
-        if (!sessionService.isPresent(sessionId.get())) {
+        if (sessionId.isEmpty() || !sessionService.isPresent(sessionId.get())){
 
             response.sendRedirect("/weather-viewer/sign-in");
             return false;

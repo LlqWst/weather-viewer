@@ -20,6 +20,7 @@ public class RegistrationController {
     private final SessionService sessionService;
 
     public RegistrationController(UserService userService, SessionService sessionService) {
+
         this.userService = userService;
         this.sessionService = sessionService;
     }
@@ -42,20 +43,17 @@ public class RegistrationController {
                                BindingResult bindingResult,
                                Model model) {
 
-        if (!doPasswordsMatch(creationRequest)) {
-
-            model.addAttribute("error", "Passwords don't match");
+        if (bindingResult.hasErrors()) {
             return "sign-up";
         }
 
-        if (bindingResult.hasErrors()) {
-
+        if (!doPasswordsMatch(creationRequest)) {
+            model.addAttribute("error", "Passwords don't match");
             return "sign-up";
         }
 
         try {
             userService.save(creationRequest);
-
         } catch (UserAlreadyExistException e) {
 
             model.addAttribute("error", e.getMessage());

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-
 @Service
 @Slf4j
 public class SessionService {
@@ -50,9 +49,9 @@ public class SessionService {
 
         if (isPresent(sessionId)) {
             sessionRepository.deleteById(sessionId);
+        } else {
+            throw new DataBaseException("Error during deletion of session");
         }
-
-        throw new DataBaseException("Error during deletion of session");
     }
 
     public boolean isExpired(UUID sessionID){

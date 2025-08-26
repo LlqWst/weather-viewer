@@ -68,7 +68,7 @@ public class DevPersistenceConfig {
             DataSource dataSource,
             @Value("${flyway.locations}") String[] locations,
             @Value("${flyway.validateOnMigrate}") boolean isValidateOnMigrate,
-            @Value("${flyway.schema}") String schema){
+            @Value("${flyway.schema}") String schema) {
 
         return Flyway.configure()
                 .dataSource(dataSource)

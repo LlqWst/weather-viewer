@@ -80,7 +80,6 @@ public class AuthController {
             HttpServletResponse response) {
 
         sessionService.delete(sessionId);
-
         response.addCookie(cookieService.delete());
 
         return "redirect:sign-in";
