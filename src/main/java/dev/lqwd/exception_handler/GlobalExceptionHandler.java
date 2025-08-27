@@ -1,25 +1,22 @@
 package dev.lqwd.exception_handler;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
-
 
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public Object handleUniversalException(Exception ex, HttpServletRequest request) {
+    public String handleUniversalException(Exception ex, Model model) {
 
-        ModelAndView mav = new ModelAndView("error");
-        mav.addObject("statusCode", 500);
-
-        log.error("Exception occurred: {} - {}", request.getRequestURI(), ex.getMessage(), ex);
-        return mav;
+        model.addAttribute("errorCode", "DB_ERROR");
+        log.error("Exception occurred:  {}",  ex.getMessage(), ex);
+        return "error";
     }
+
 
 }
 

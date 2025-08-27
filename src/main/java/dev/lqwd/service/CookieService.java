@@ -1,7 +1,9 @@
 package dev.lqwd.service;
 
+import dev.lqwd.exception.DataBaseException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -9,11 +11,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class CookieService {
 
     private static final int COOKIE_AGE = 60 * 30;
     private static final String SESSION_ID = "sessionId";
     private static final String EMPTY = "";
+    private static final String ERROR_MESSAGE_INCORRECT_SESSION_ID = "incorrect data type for session id: %s";
 
     public Cookie create(String sessionId) {
 
@@ -39,15 +43,15 @@ public class CookieService {
                 .filter(cookie -> SESSION_ID.equals(cookie.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
-                .flatMap(this::parseUUID);
+                .map(this::parseUUID);
     }
 
-    private Optional<UUID> parseUUID(String id) {
+    private UUID parseUUID(String id) {
         try {
-            return Optional.of(UUID.fromString(id));
+            return UUID.fromString(id);
 
         } catch (IllegalArgumentException e) {
-            return Optional.empty();
+            throw new DataBaseException(ERROR_MESSAGE_INCORRECT_SESSION_ID.formatted(id));
         }
     }
 

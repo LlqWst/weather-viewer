@@ -30,18 +30,21 @@ public class SessionService {
                 sessionRepository.save(Session.builder()
                 .user(user)
                 .build()))
-                .orElseThrow(() -> new DataBaseException("Error during save user"));
+                .orElseThrow(() -> new DataBaseException("Error during save session"));
 
         return session.getId().toString();
     }
 
-    public boolean isPresent(UUID sessionId){
+    public boolean isPresent(UUID sessionId) {
 
-        if (sessionId == null){
+        if (sessionId == null) {
             return false;
         }
 
-        return sessionRepository.findById(sessionId).isPresent();
+        if (sessionRepository.findById(sessionId).isPresent()) {
+            return true;
+        }
+        throw new DataBaseException("Provided sessionId is not exist: " + sessionId);
     }
 
 
@@ -50,7 +53,7 @@ public class SessionService {
         if (isPresent(sessionId)) {
             sessionRepository.deleteById(sessionId);
         } else {
-            throw new DataBaseException("Error during deletion of session");
+            throw new DataBaseException("Error during deletion of session id" + sessionId);
         }
     }
 

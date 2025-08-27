@@ -19,7 +19,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -179,7 +178,7 @@ public class RegistrationControllerTest {
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", CORRECT_PASSWORD))
                 .andDo(print())
-                .andExpect(model().attribute("error", "User already exist"))
+                .andExpect(model().attribute("error", "User already exists"))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
 
         Optional<User> savedUser = userRepository.findByLogin(loginForTest);

@@ -1,7 +1,5 @@
-package dev.lqwd;
+package dev.lqwd.configuration;
 
-import dev.lqwd.configuration.DevPersistenceConfig;
-import dev.lqwd.configuration.WebMvcConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import lombok.NonNull;

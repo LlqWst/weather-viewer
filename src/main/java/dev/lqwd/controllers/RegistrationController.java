@@ -1,7 +1,8 @@
 package dev.lqwd.controllers;
 
-import dev.lqwd.exception.UserAlreadyExistException;
-import dev.lqwd.dto.UserCreationRequestDto;
+import dev.lqwd.Validator;
+import dev.lqwd.dto.UserRegistrationRequestDto;
+import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.SessionService;
 import dev.lqwd.service.UserService;
 import jakarta.validation.Valid;
@@ -34,37 +35,30 @@ public class RegistrationController {
             return "redirect:/home";
         }
 
-        model.addAttribute("userCreationRequest", new UserCreationRequestDto());
+        model.addAttribute("userCreationRequest", new UserRegistrationRequestDto());
         return "sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String registration(@Valid @ModelAttribute("userCreationRequest") UserCreationRequestDto creationRequest,
+    public String registration(@Valid @ModelAttribute("userCreationRequest") UserRegistrationRequestDto registrationRequest,
                                BindingResult bindingResult,
                                Model model) {
+
 
         if (bindingResult.hasErrors()) {
             return "sign-up";
         }
 
-        if (!doPasswordsMatch(creationRequest)) {
-            model.addAttribute("error", "Passwords don't match");
-            return "sign-up";
-        }
-
         try {
-            userService.save(creationRequest);
-        } catch (UserAlreadyExistException e) {
+            Validator.validatePasswordOnEquals(registrationRequest);
+            userService.save(registrationRequest);
+
+            return "redirect:/";
+        } catch (UserValidationException e) {
 
             model.addAttribute("error", e.getMessage());
             return "sign-up";
         }
-
-        return "redirect:/";
-    }
-
-    private static boolean doPasswordsMatch(UserCreationRequestDto creationRequest) {
-        return creationRequest.getPassword().equals(creationRequest.getPasswordConfirm());
     }
 
 }

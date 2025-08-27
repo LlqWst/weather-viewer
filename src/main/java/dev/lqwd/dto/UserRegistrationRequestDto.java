@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserCreationRequestDto {
+public class UserRegistrationRequestDto {
 
     @LoginOrEmail
     private String login;
