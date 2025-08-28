@@ -25,10 +25,10 @@ public class RegistrationController {
     }
 
     @GetMapping("/sign-up")
-    public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+    public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                        Model model) {
 
-        boolean hasValidSession = Validator.parseUUID(sessionIdFromCookie)
+        boolean hasValidSession = Validator.parseUUID(sessionId)
                 .filter(sessionService::isPresent)
                 .isPresent();
 

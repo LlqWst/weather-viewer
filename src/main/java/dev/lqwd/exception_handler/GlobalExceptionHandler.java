@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     public String handleUniversalException(Exception ex, Model model) {
 
         model.addAttribute("errorCode", "DB_ERROR");
-        log.error("Exception occurred:  {}",  ex.getMessage(), ex);
+        log.error("Exception occurred:  {}", ex.getMessage(), ex);
         return "error";
     }
 

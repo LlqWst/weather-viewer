@@ -17,6 +17,7 @@ import java.util.UUID;
 public class SessionService {
 
     private static final int SESSION_VALIDATION_INTERVAL_MS = 10 * 60 * 1000;
+    private static final String ERROR_MESSAGE_CREATE_SESSION = "Error during save session";
 
     private final SessionRepository sessionRepository;
 
@@ -26,13 +27,13 @@ public class SessionService {
 
     public String create(User user) {
 
-        Session session = Optional.of(
-                        sessionRepository.save(Session.builder()
+        return Optional.of(sessionRepository.save(Session.builder()
                                 .user(user)
-                                .build()))
-                .orElseThrow(() -> new DataBaseException("Error during save session"));
+                                .build())
+                                .getId()
+                                .toString())
+                .orElseThrow(() -> new DataBaseException(ERROR_MESSAGE_CREATE_SESSION));
 
-        return session.getId().toString();
     }
 
     public boolean isPresent(UUID sessionId) {

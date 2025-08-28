@@ -168,6 +168,20 @@ public class RegistrationControllerTest {
     }
 
     @Test
+    public void should_RenderSignUp_When_IncorrectCookies() throws Exception {
+
+        Cookie cookie = new Cookie("sessionId", "sdfdsfsd");
+
+        mockMvc.perform(get("/sign-up")
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .cookie(cookie))
+                .andDo(print())
+                .andExpect(view().name("sign-up"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+
+    }
+
+    @Test
     public void should_HasErrors_When_CreateWithSameLogin() throws Exception {
 
         String loginForTest = INIT_USER_LOGIN;

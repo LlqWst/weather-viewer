@@ -15,9 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.util.UUID;
-
 
 @Controller
 @Slf4j
@@ -44,10 +41,10 @@ public class AuthController {
     }
 
     @GetMapping({"/sign-in"})
-    public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+    public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                  Model model) {
 
-        boolean hasValidSession = Validator.parseUUID(sessionIdFromCookie)
+        boolean hasValidSession = Validator.parseUUID(sessionId)
                 .filter(sessionService::isPresent)
                 .isPresent();
 
@@ -83,16 +80,14 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    public String signOut(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+    public String signOut(@CookieValue(value = "sessionId", required = false) String sessionId,
                           HttpServletResponse response) {
 
-        Optional<UUID> sessionId = Validator.parseUUID(sessionIdFromCookie);
+        Validator.parseUUID(sessionId)
+                .ifPresentOrElse(
+                        sessionService::delete,
+                        ()-> log.warn("Attempt to logout with invalid session cookie: {}", sessionId));
 
-        if (sessionId.isEmpty()){
-            log.warn("Attempt to logout with invalid session cookie: {}", sessionIdFromCookie);
-        }
-
-        sessionId.ifPresent(sessionService::delete);
         response.addCookie(cookieService.delete());
 
         return "redirect:sign-in";
