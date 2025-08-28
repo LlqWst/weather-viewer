@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -21,8 +20,10 @@ import java.util.Properties;
 @Profile("test")
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories("dev.lqwd.repository")
-@ComponentScan("dev.lqwd.service")
+@ComponentScan({
+        "dev.lqwd.service",
+        "dev.lqwd.repository"
+})
 @PropertySource("classpath:app_test.properties")
 public class TestPersistenceConfig {
 

@@ -135,8 +135,8 @@ public class RegistrationControllerTest {
     @Test
     public void should_RedirectToHome_When_HasCookies() throws Exception {
 
-        Optional<User> user = userRepository.findByLogin(INIT_USER_LOGIN);
-        String uuid = sessionService.create(user.get());
+        User user = userRepository.findByLogin(INIT_USER_LOGIN).orElseThrow();
+        String uuid = sessionService.create(user);
 
         Cookie cookie = new Cookie("sessionId", uuid);
 
@@ -157,6 +157,20 @@ public class RegistrationControllerTest {
     public void should_RenderSignUp_When_NoCookies() throws Exception {
 
         Cookie cookie = new Cookie("test", "");
+
+        mockMvc.perform(get("/sign-up")
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .cookie(cookie))
+                .andDo(print())
+                .andExpect(view().name("sign-up"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+
+    }
+
+    @Test
+    public void should_RenderSignUp_When_IncorrectCookies() throws Exception {
+
+        Cookie cookie = new Cookie("sessionId", "sdfdsfsd");
 
         mockMvc.perform(get("/sign-up")
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class CryptService {
 
     private static final int DEFAULT_LOG_ROUNDS = 12;
-    private static final String ERROR_MESSAGE = "Incorrect Password";
+    private static final String ERROR_MESSAGE_INCORRECT_PASSWORD = "Incorrect Password";
 
     public String getHashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt(DEFAULT_LOG_ROUNDS));
@@ -18,9 +18,8 @@ public class CryptService {
 
     public void verifyPassword(String password, String hash) {
         if(!BCrypt.checkpw(password, hash)){
-
-            log.warn(ERROR_MESSAGE);
-            throw new IncorrectCredentialsException(ERROR_MESSAGE);
+            log.warn(ERROR_MESSAGE_INCORRECT_PASSWORD);
+            throw new IncorrectCredentialsException(ERROR_MESSAGE_INCORRECT_PASSWORD);
         }
     }
 }

@@ -5,10 +5,8 @@ import dev.lqwd.entity.User;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,7 +14,7 @@ import java.util.UUID;
 @Slf4j
 public class SessionService {
 
-    private static final int SESSION_VALIDATION_INTERVAL_MS = 10 * 60 * 1000;
+    private static final String ERROR_MESSAGE_CREATE_SESSION = "Error during save session for user: ";
 
     private final SessionRepository sessionRepository;
 
@@ -26,13 +24,12 @@ public class SessionService {
 
     public String create(User user) {
 
-        Session session = Optional.of(
-                        sessionRepository.save(Session.builder()
+        return Optional.of(sessionRepository.save(Session.builder()
                                 .user(user)
-                                .build()))
-                .orElseThrow(() -> new DataBaseException("Error during save session"));
-
-        return session.getId().toString();
+                                .build())
+                                .getId()
+                                .toString())
+                .orElseThrow(() -> new DataBaseException(ERROR_MESSAGE_CREATE_SESSION + user));
     }
 
     public boolean isPresent(UUID sessionId) {
@@ -48,26 +45,8 @@ public class SessionService {
         if (isPresent(sessionId)) {
             sessionRepository.deleteById(sessionId);
         } else {
-            log.warn("Attempt to logout with invalid session: {}", sessionId);
+            log.warn("Attempt to logout with invalid UUID: {}", sessionId);
         }
-    }
-
-    public boolean isExpired(UUID sessionID) {
-
-        LocalDateTime expiresAt = sessionRepository.findById(sessionID)
-                .map(Session::getExpiresAt)
-                .orElseThrow(() -> new DataBaseException("Session not found with id: " + sessionID));
-
-        return LocalDateTime.now().isAfter(expiresAt);
-    }
-
-    @Scheduled(fixedRate = SESSION_VALIDATION_INTERVAL_MS)
-    public void cleanupExpiredSessions() {
-
-        LocalDateTime now = LocalDateTime.now();
-        int deletedCount = sessionRepository.deleteByExpiresAtBefore(now);
-
-        log.info("Deleted {} expired sessions", deletedCount);
     }
 
 }

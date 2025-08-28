@@ -13,7 +13,6 @@ import java.util.UUID;
 public final class Validator {
 
     private static final String ERROR_MESSAGE_DIFFERENT_PASSWORDS = "Passwords don't match";
-
     public static void validatePasswordOnEquals(UserRegistrationRequestDto creationRequest) {
 
         if (!creationRequest.getPassword().equals(creationRequest.getPasswordConfirm())) {
@@ -31,5 +30,4 @@ public final class Validator {
             return Optional.empty();
         }
     }
-
 }

@@ -28,7 +28,7 @@ public class LocationServiceTest {
 
 
     @Autowired
-    LocationRepository locationRepository;
+    private LocationRepository locationRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -41,7 +41,7 @@ public class LocationServiceTest {
                 .password("test")
                 .build();
 
-        User savedUser = userRepository.findById(1)
+        User savedUser = userRepository.findById(1L)
                 .orElseGet(() -> userRepository.save(user));
 
         Location location = Location.builder()

@@ -1,12 +1,8 @@
 package dev.lqwd.controllers;
 
-import dev.lqwd.Validator;
 import dev.lqwd.exception.user_validation.UserValidationException;
-import dev.lqwd.service.CookieService;
+import dev.lqwd.service.AuthService;
 import dev.lqwd.dto.AuthRequestDto;
-import dev.lqwd.entity.User;
-import dev.lqwd.service.SessionService;
-import dev.lqwd.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -15,43 +11,23 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.util.UUID;
-
 
 @Controller
 @Slf4j
 public class AuthController {
 
-    private final UserService userService;
-    private final SessionService sessionService;
-    private final CookieService cookieService;
+    private final AuthService authService;
 
-    public AuthController(UserService userService,
-                          SessionService sessionService,
-                          CookieService cookieService) {
+    public AuthController(AuthService authService) {
 
-        this.userService = userService;
-        this.sessionService = sessionService;
-        this.cookieService = cookieService;
+        this.authService = authService;
     }
 
-
-    @GetMapping({"/"})
-    public String index() {
-
-        return "redirect:sign-in";
-    }
-
-    @GetMapping({"/sign-in"})
-    public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+    @GetMapping({"/", "/sign-in"})
+    public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                  Model model) {
 
-        boolean hasValidSession = Validator.parseUUID(sessionIdFromCookie)
-                .filter(sessionService::isPresent)
-                .isPresent();
-
-        if (hasValidSession) {
+        if (authService.hasValidSession(sessionId)) {
             return "redirect:/home";
         }
 
@@ -70,9 +46,8 @@ public class AuthController {
         }
 
         try {
-            User user = userService.readByLogin(authRequest);
-            String sessionId = sessionService.create(user);
-            response.addCookie(cookieService.create(sessionId));
+            response.addCookie(authService
+                    .createNewSession(authRequest));
             return "redirect:home";
 
         } catch (UserValidationException e) {
@@ -83,18 +58,11 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    public String signOut(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+    public String signOut(@CookieValue(value = "sessionId", required = false) String sessionId,
                           HttpServletResponse response) {
 
-        Optional<UUID> sessionId = Validator.parseUUID(sessionIdFromCookie);
-
-        if (sessionId.isEmpty()){
-            log.warn("Attempt to logout with invalid session cookie: {}", sessionIdFromCookie);
-        }
-
-        sessionId.ifPresent(sessionService::delete);
-        response.addCookie(cookieService.delete());
-
+        response.addCookie(authService
+                .closeSession(sessionId));
         return "redirect:sign-in";
     }
 

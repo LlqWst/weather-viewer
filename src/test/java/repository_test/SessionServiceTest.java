@@ -38,7 +38,7 @@ public class SessionServiceTest {
                 .password("test")
                 .build();
 
-        User savedUser = userRepository.findById(1)
+        User savedUser = userRepository.findById(1L)
                 .orElseGet(() -> userRepository.save(user));
 
 

@@ -1,5 +1,6 @@
 package dev.lqwd.service;
 
+import dev.lqwd.Validator;
 import dev.lqwd.dto.AuthRequestDto;
 import dev.lqwd.dto.UserRegistrationRequestDto;
 import dev.lqwd.entity.User;
@@ -7,7 +8,7 @@ import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import dev.lqwd.exception.user_validation.UserAlreadyExistsException;
 import dev.lqwd.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,20 +39,23 @@ public class UserService {
         return user;
     }
 
-    public User save(UserRegistrationRequestDto creationRequest) {
+    public void save(UserRegistrationRequestDto creationRequest) {
 
+        Validator.validatePasswordOnEquals(creationRequest);
         String hashedPassword = cryptService.getHashPassword(creationRequest.getPassword());
 
         try {
-            return userRepository.save(User.builder()
+            userRepository.save(User.builder()
                     .login(creationRequest.getLogin())
                     .password(hashedPassword)
                     .build());
 
-        } catch (DataIntegrityViolationException e) {
-
-            log.warn(ERROR_MESSAGE_USER_EXISTS);
-            throw new UserAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS);
+        } catch (ConstraintViolationException e) {
+            if(e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
+                log.warn(ERROR_MESSAGE_USER_EXISTS);
+                throw new UserAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS);
+            }
+            throw e;
         }
     }
 

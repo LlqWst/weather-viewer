@@ -1,9 +1,9 @@
 package dev.lqwd.controllers;
 
-import dev.lqwd.Validator;
+
 import dev.lqwd.dto.UserRegistrationRequestDto;
 import dev.lqwd.exception.user_validation.UserValidationException;
-import dev.lqwd.service.SessionService;
+import dev.lqwd.service.AuthService;
 import dev.lqwd.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -16,23 +16,19 @@ import org.springframework.web.bind.annotation.*;
 public class RegistrationController {
 
     private final UserService userService;
-    private final SessionService sessionService;
+    private final AuthService authService;
 
-    public RegistrationController(UserService userService, SessionService sessionService) {
+    public RegistrationController(UserService userService, AuthService authService) {
 
         this.userService = userService;
-        this.sessionService = sessionService;
+        this.authService = authService;
     }
 
     @GetMapping("/sign-up")
-    public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+    public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                        Model model) {
 
-        boolean hasValidSession = Validator.parseUUID(sessionIdFromCookie)
-                .filter(sessionService::isPresent)
-                .isPresent();
-
-        if (hasValidSession) {
+        if (authService.hasValidSession(sessionId)) {
             return "redirect:/home";
         }
 
@@ -50,7 +46,6 @@ public class RegistrationController {
         }
 
         try {
-            Validator.validatePasswordOnEquals(registrationRequest);
             userService.save(registrationRequest);
             return "redirect:/";
 

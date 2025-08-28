@@ -7,7 +7,6 @@ import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -22,8 +21,10 @@ import java.util.Properties;
 @Profile("dev")
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories("dev.lqwd.repository")
-@ComponentScan("dev.lqwd.service")
+@ComponentScan({
+        "dev.lqwd.service",
+        "dev.lqwd.repository"
+})
 @PropertySource("classpath:app.properties")
 @EnableScheduling
 public class DevPersistenceConfig {
