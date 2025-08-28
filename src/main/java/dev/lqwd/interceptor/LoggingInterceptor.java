@@ -7,14 +7,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Optional;
-import java.util.UUID;
 
 @Component
 public class LoggingInterceptor implements HandlerInterceptor {
 
     private final SessionService sessionService;
     private final CookieService cookieService;
+    private static final String SIGN_IN_URL = "/weather-viewer/sign-in";
 
     public LoggingInterceptor(SessionService sessionService, CookieService cookieService) {
         this.sessionService = sessionService;
@@ -26,19 +25,19 @@ public class LoggingInterceptor implements HandlerInterceptor {
                              HttpServletResponse response,
                              Object handler) throws Exception {
 
-        Optional <UUID> sessionId = cookieService.getSessionId(request);
+        if (!hasValidSession(request)) {
 
-        if (isNotExist(sessionId)){
-            response.sendRedirect("/weather-viewer/sign-in");
-
+            response.sendRedirect(SIGN_IN_URL);
             return false;
         }
-
         return true;
     }
 
-    private boolean isNotExist(Optional<UUID> sessionId) {
-        return sessionId.isEmpty() || !sessionService.isPresent(sessionId.get());
+    private boolean hasValidSession(HttpServletRequest request) {
+
+        return cookieService.getSessionId(request.getCookies())
+                .filter(sessionService::isPresent)
+                .isPresent();
     }
 
 }

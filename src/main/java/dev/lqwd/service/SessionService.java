@@ -24,12 +24,12 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public String create (User user){
+    public String create(User user) {
 
         Session session = Optional.of(
-                sessionRepository.save(Session.builder()
-                .user(user)
-                .build()))
+                        sessionRepository.save(Session.builder()
+                                .user(user)
+                                .build()))
                 .orElseThrow(() -> new DataBaseException("Error during save session"));
 
         return session.getId().toString();
@@ -37,33 +37,28 @@ public class SessionService {
 
     public boolean isPresent(UUID sessionId) {
 
-        if (sessionId == null) {
-            return false;
-        }
-
-        if (sessionRepository.findById(sessionId).isPresent()) {
-            return true;
-        }
-        throw new DataBaseException("Provided sessionId is not exist: " + sessionId);
+        return Optional.ofNullable(sessionId)
+                .flatMap(sessionRepository::findById)
+                .isPresent();
     }
 
 
-    public void delete(UUID sessionId){
+    public void delete(UUID sessionId) {
 
         if (isPresent(sessionId)) {
             sessionRepository.deleteById(sessionId);
         } else {
-            throw new DataBaseException("Error during deletion of session id" + sessionId);
+            log.warn("Attempt to logout with invalid session: {}", sessionId);
         }
     }
 
-    public boolean isExpired(UUID sessionID){
+    public boolean isExpired(UUID sessionID) {
 
-         LocalDateTime expiresAt = sessionRepository.findById(sessionID)
+        LocalDateTime expiresAt = sessionRepository.findById(sessionID)
                 .map(Session::getExpiresAt)
                 .orElseThrow(() -> new DataBaseException("Session not found with id: " + sessionID));
 
-         return LocalDateTime.now().isAfter(expiresAt);
+        return LocalDateTime.now().isAfter(expiresAt);
     }
 
     @Scheduled(fixedRate = SESSION_VALIDATION_INTERVAL_MS)

@@ -17,6 +17,5 @@ public class GlobalExceptionHandler {
         return "error";
     }
 
-
 }
 

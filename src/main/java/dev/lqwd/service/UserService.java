@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private static final String ERROR_MESSAGE_USER_EXISTS = "User already exists";
-    private static final String ERROR_MESSAGE_INCORRECT_LOGIN= "Incorrect login";
+    private static final String ERROR_MESSAGE_INCORRECT_LOGIN = "Incorrect login";
 
     private final UserRepository userRepository;
     private final CryptService cryptService;
@@ -49,10 +49,10 @@ public class UserService {
                     .build());
 
         } catch (DataIntegrityViolationException e) {
+
             log.warn(ERROR_MESSAGE_USER_EXISTS);
             throw new UserAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS);
         }
-
     }
 
 }

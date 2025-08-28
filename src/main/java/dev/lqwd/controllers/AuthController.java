@@ -1,24 +1,26 @@
 package dev.lqwd.controllers;
 
+import dev.lqwd.Validator;
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.CookieService;
-import dev.lqwd.service.CryptService;
 import dev.lqwd.dto.AuthRequestDto;
 import dev.lqwd.entity.User;
 import dev.lqwd.service.SessionService;
 import dev.lqwd.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
 @Controller
+@Slf4j
 public class AuthController {
 
     private final UserService userService;
@@ -42,17 +44,19 @@ public class AuthController {
     }
 
     @GetMapping({"/sign-in"})
-    public String showSignInForm(
-            Model model,
-            @CookieValue(value = "sessionId", required = false) UUID sessionId) {
+    public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+                                 Model model) {
 
-        if (sessionService.isPresent(sessionId)) {
-            return "redirect:home";
+        boolean hasValidSession = Validator.parseUUID(sessionIdFromCookie)
+                .filter(sessionService::isPresent)
+                .isPresent();
+
+        if (hasValidSession) {
+            return "redirect:/home";
         }
 
         model.addAttribute("authRequest", new AuthRequestDto());
         return "sign-in";
-
     }
 
     @PostMapping("/sign-in")
@@ -61,29 +65,34 @@ public class AuthController {
                                  HttpServletResponse response,
                                  Model model) {
 
-         if (bindingResult.hasErrors()){
-             return "sign-in";
-         }
+        if (bindingResult.hasErrors()) {
+            return "sign-in";
+        }
 
-         try {
-             User user = userService.readByLogin(authRequest);
-             String sessionId = sessionService.create(user);
-             response.addCookie(cookieService.create(sessionId));
+        try {
+            User user = userService.readByLogin(authRequest);
+            String sessionId = sessionService.create(user);
+            response.addCookie(cookieService.create(sessionId));
+            return "redirect:home";
 
-             return "redirect:home";
-         } catch (UserValidationException e){
-
-             model.addAttribute("error", e.getMessage());
-             return "sign-in";
-         }
+        } catch (UserValidationException e) {
+            model.addAttribute("error", e.getMessage());
+            return "sign-in";
+        }
 
     }
 
     @PostMapping("/sign-out")
-    public String signOut(@CookieValue(value = "sessionId", required = false) UUID sessionId,
+    public String signOut(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
                           HttpServletResponse response) {
 
-        sessionService.delete(sessionId);
+        Optional<UUID> sessionId = Validator.parseUUID(sessionIdFromCookie);
+
+        if (sessionId.isEmpty()){
+            log.warn("Attempt to logout with invalid session cookie: {}", sessionIdFromCookie);
+        }
+
+        sessionId.ifPresent(sessionService::delete);
         response.addCookie(cookieService.delete());
 
         return "redirect:sign-in";

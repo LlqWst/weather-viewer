@@ -11,8 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 
 @Controller
 public class RegistrationController {
@@ -27,11 +25,14 @@ public class RegistrationController {
     }
 
     @GetMapping("/sign-up")
-    public String showRegistrationForm(
-            Model model,
-            @CookieValue(value = "sessionId", required = false) UUID sessionId) {
+    public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionIdFromCookie,
+                                       Model model) {
 
-        if (sessionService.isPresent(sessionId)) {
+        boolean hasValidSession = Validator.parseUUID(sessionIdFromCookie)
+                .filter(sessionService::isPresent)
+                .isPresent();
+
+        if (hasValidSession) {
             return "redirect:/home";
         }
 
@@ -44,7 +45,6 @@ public class RegistrationController {
                                BindingResult bindingResult,
                                Model model) {
 
-
         if (bindingResult.hasErrors()) {
             return "sign-up";
         }
@@ -52,10 +52,9 @@ public class RegistrationController {
         try {
             Validator.validatePasswordOnEquals(registrationRequest);
             userService.save(registrationRequest);
-
             return "redirect:/";
-        } catch (UserValidationException e) {
 
+        } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
             return "sign-up";
         }
