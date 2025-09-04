@@ -2,12 +2,14 @@ package controller_test;
 
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.WebMvcConfig;
-import dev.lqwd.controllers.RegistrationController;
+import dev.lqwd.controller.RegistrationController;
+import dev.lqwd.dto.UserRegistrationRequestDto;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.repository.UserRepository;
 import dev.lqwd.service.SessionService;
+import dev.lqwd.service.UserService;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +36,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -46,7 +49,8 @@ public class AuthControllerTest {
 
     private static final String INIT_USER_LOGIN = "test_1";
     private static final String CORRECT_PASSWORD = "123456";
-    private static final String URL_CONTROLLER = "/sign-in";
+    private static final String URL_SIGN_IN = "/sign-in";
+    private static final String URL_SING_OUT = "/sign-out";
     private static final String URL_HOME = "/home";
     private static final String COOKIE_NAME = "sessionId";
 
@@ -58,6 +62,9 @@ public class AuthControllerTest {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     SessionService sessionService;
@@ -79,10 +86,12 @@ public class AuthControllerTest {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        userRepository.save(User.builder()
-                .login(INIT_USER_LOGIN)
-                .password(CORRECT_PASSWORD)
+        userService.save(UserRegistrationRequestDto.builder()
+                        .login(INIT_USER_LOGIN)
+                        .password(CORRECT_PASSWORD)
+                        .passwordConfirm(CORRECT_PASSWORD)
                 .build());
+
     }
 
     @AfterEach
@@ -100,7 +109,7 @@ public class AuthControllerTest {
 
         Cookie cookie = new Cookie(COOKIE_NAME, uuid);
 
-        mockMvc.perform(get(URL_CONTROLLER)
+        mockMvc.perform(get(URL_SIGN_IN)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
                         .cookie(cookie))
                 .andDo(print())
@@ -112,4 +121,77 @@ public class AuthControllerTest {
 
         sessionRepository.deleteAll();
     }
+
+    @Test
+    public void should_RedirectToHome_When_CorrectCredentials() throws Exception {
+
+        mockMvc.perform(post(URL_SIGN_IN)
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .param("login", INIT_USER_LOGIN)
+                        .param("password", CORRECT_PASSWORD)
+                )
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(URL_HOME));
+    }
+
+    @Test
+    public void should_PrintError_When_LoginIsNull() throws Exception {
+
+        String login = null;
+
+        mockMvc.perform(post(URL_SIGN_IN)
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .param("login", login)
+                        .param("password", CORRECT_PASSWORD))
+                .andDo(print())
+                .andExpect(model().attributeHasErrors("authRequest"))
+                .andExpect(model().attributeHasFieldErrors("authRequest", "login"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+    }
+
+    @Test
+    public void should_PrintError_When_PasswordIsNull() throws Exception {
+
+        String password = null;
+
+        mockMvc.perform(post(URL_SIGN_IN)
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .param("login", INIT_USER_LOGIN)
+                        .param("password", password))
+                .andDo(print())
+                .andExpect(model().attributeHasErrors("authRequest"))
+                .andExpect(model().attributeHasFieldErrors("authRequest", "password"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+    }
+
+    @Test
+    public void should_DeleteCookie_When_SignOut() throws Exception {
+
+        User user = userRepository.findByLogin(INIT_USER_LOGIN).orElseThrow();
+        String uuid = sessionService.create(user);
+        Cookie cookie = new Cookie("sessionId", uuid);
+
+        mockMvc.perform(post(URL_SING_OUT)
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .cookie(cookie))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(URL_SIGN_IN));
+    }
+
+    @Test
+    public void should_DeleteIncorrectCookie_When_SignOut1() throws Exception {
+
+        Cookie cookie = new Cookie("sessionId", "123");
+
+        mockMvc.perform(post(URL_SING_OUT)
+                        .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .cookie(cookie))
+                .andDo(print())
+                .andExpect(cookie().doesNotExist(COOKIE_NAME))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/weather-viewer/sign-in"));
+    }
+
 }

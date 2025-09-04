@@ -22,6 +22,7 @@ public class CookieService {
         Cookie cookie = new Cookie(SESSION_ID, sessionId);
         cookie.setMaxAge(COOKIE_AGE);
         cookie.setPath("/");
+        cookie.setHttpOnly(true);
 
         return cookie;
     }

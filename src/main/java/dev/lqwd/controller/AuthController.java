@@ -1,4 +1,4 @@
-package dev.lqwd.controllers;
+package dev.lqwd.controller;
 
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.AuthService;
@@ -19,11 +19,16 @@ public class AuthController {
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
-
         this.authService = authService;
     }
 
-    @GetMapping({"/", "/sign-in"})
+    @GetMapping("/")
+    public String redirectToSignIn(){
+
+        return "redirect:/sign-in";
+    }
+
+    @GetMapping({"/sign-in"})
     public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                  Model model) {
 
@@ -48,7 +53,7 @@ public class AuthController {
         try {
             response.addCookie(authService
                     .createNewSession(authRequest));
-            return "redirect:home";
+            return "redirect:/home";
 
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
@@ -63,7 +68,7 @@ public class AuthController {
 
         response.addCookie(authService
                 .closeSession(sessionId));
-        return "redirect:sign-in";
+        return "redirect:/sign-in";
     }
 
 }

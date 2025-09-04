@@ -13,8 +13,8 @@ import java.util.UUID;
 
 
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Getter
 @Setter
@@ -33,6 +33,7 @@ public class Session {
     private User user;
 
     @Column(nullable = false, name = "expires_at")
+    @Builder.Default
     private final LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(30);
 
 }

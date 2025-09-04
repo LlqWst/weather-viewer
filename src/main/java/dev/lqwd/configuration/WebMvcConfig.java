@@ -22,7 +22,7 @@ import java.util.List;
 @Configuration
 @EnableWebMvc
 @ComponentScan({
-        "dev.lqwd.controllers",
+        "dev.lqwd.controller",
         "dev.lqwd.interceptor",
         "dev.lqwd.exception_handler"
 })

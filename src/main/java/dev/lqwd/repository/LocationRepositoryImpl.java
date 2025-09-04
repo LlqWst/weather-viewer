@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public class LocationRepositoryImpl extends AbstractRepository<Location, Long> implements LocationRepository {
+public class LocationRepositoryImpl extends AbstractRepositoryImpl<Location, Long> implements LocationRepository {
 
     public LocationRepositoryImpl() {
         super(Location.class);

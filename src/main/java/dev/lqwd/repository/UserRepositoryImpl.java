@@ -8,7 +8,7 @@ import java.util.Optional;
 
 
 @Repository
-public class UserRepositoryImpl extends AbstractRepository<User, Long> implements UserRepository {
+public class UserRepositoryImpl extends AbstractRepositoryImpl<User, Long> implements UserRepository {
 
     public UserRepositoryImpl() {
         super(User.class);

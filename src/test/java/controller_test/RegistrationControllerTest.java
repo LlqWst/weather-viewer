@@ -2,7 +2,7 @@ package controller_test;
 
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.WebMvcConfig;
-import dev.lqwd.controllers.RegistrationController;
+import dev.lqwd.controller.RegistrationController;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;
@@ -111,7 +111,7 @@ public class RegistrationControllerTest {
                         .param("passwordConfirm", CORRECT_PASSWORD))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+                .andExpect(redirectedUrl("/home"));
 
         Optional<User> savedUser = userRepository.findByLogin(login);
         Assertions.assertTrue(savedUser.isPresent());

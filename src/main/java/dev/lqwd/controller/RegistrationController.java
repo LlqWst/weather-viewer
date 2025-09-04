@@ -1,10 +1,11 @@
-package dev.lqwd.controllers;
+package dev.lqwd.controller;
 
 
 import dev.lqwd.dto.UserRegistrationRequestDto;
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.AuthService;
 import dev.lqwd.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,8 @@ public class RegistrationController {
     @PostMapping("/sign-up")
     public String registration(@Valid @ModelAttribute("userCreationRequest") UserRegistrationRequestDto registrationRequest,
                                BindingResult bindingResult,
-                               Model model) {
+                               Model model,
+                               HttpServletResponse response) {
 
         if (bindingResult.hasErrors()) {
             return "sign-up";
@@ -47,7 +49,7 @@ public class RegistrationController {
 
         try {
             userService.save(registrationRequest);
-            return "redirect:/";
+            return "redirect:/home";
 
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());

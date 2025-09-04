@@ -53,12 +53,13 @@ public class AuthService {
     }
 
     @Scheduled(fixedRate = SESSION_VALIDATION_INTERVAL_MS)
-    public void cleanupExpiredSessions() {
+    public int cleanupExpiredSessions() {
 
         LocalDateTime now = LocalDateTime.now();
         int deletedCount = sessionRepository.deleteByExpiresAtBefore(now);
 
         log.info("Deleted {} expired sessions", deletedCount);
+        return deletedCount;
     }
 
     public boolean hasValidSession(String sessionId) {

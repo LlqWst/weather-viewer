@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Repository
-public class SessionRepositoryImpl extends AbstractRepository<Session, UUID> implements SessionRepository {
+public class SessionRepositoryImpl extends AbstractRepositoryImpl<Session, UUID> implements SessionRepository {
 
     public SessionRepositoryImpl() {
         super(Session.class);
