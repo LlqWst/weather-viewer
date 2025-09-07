@@ -2,8 +2,8 @@ package controller_test;
 
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.WebMvcConfig;
-import dev.lqwd.controller.RegistrationController;
-import dev.lqwd.dto.UserRegistrationRequestDto;
+import dev.lqwd.controller.auth.RegistrationController;
+import dev.lqwd.dto.UserRegistrationRequestDTO;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;
@@ -86,7 +86,7 @@ public class AuthControllerTest {
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        userService.save(UserRegistrationRequestDto.builder()
+        userService.save(UserRegistrationRequestDTO.builder()
                         .login(INIT_USER_LOGIN)
                         .password(CORRECT_PASSWORD)
                         .passwordConfirm(CORRECT_PASSWORD)

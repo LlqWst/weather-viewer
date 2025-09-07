@@ -1,7 +1,7 @@
-package dev.lqwd.controller;
+package dev.lqwd.controller.auth;
 
 
-import dev.lqwd.dto.UserRegistrationRequestDto;
+import dev.lqwd.dto.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.AuthService;
 import dev.lqwd.service.UserService;
@@ -33,12 +33,12 @@ public class RegistrationController {
             return "redirect:/home";
         }
 
-        model.addAttribute("userCreationRequest", new UserRegistrationRequestDto());
+        model.addAttribute("userCreationRequest", new UserRegistrationRequestDTO());
         return "sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String registration(@Valid @ModelAttribute("userCreationRequest") UserRegistrationRequestDto registrationRequest,
+    public String registration(@Valid @ModelAttribute("userCreationRequest") UserRegistrationRequestDTO registrationRequest,
                                BindingResult bindingResult,
                                Model model,
                                HttpServletResponse response) {

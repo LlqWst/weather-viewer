@@ -1,5 +1,6 @@
 package dev.lqwd.dto;
 
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,12 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class AuthRequestDto {
+public class WeatherRequestDTO {
 
-    @NotBlank(message = "Please provide login")
-    private String login;
-
-    @NotBlank(message = "Please provide password")
-    private String password;
-
+    @NotBlank
+    private String location;
 }

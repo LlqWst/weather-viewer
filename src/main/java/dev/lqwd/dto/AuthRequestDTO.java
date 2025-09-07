@@ -1,7 +1,5 @@
 package dev.lqwd.dto;
 
-import dev.lqwd.annotation.LoginOrEmail;
-import dev.lqwd.annotation.StrongPassword;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserRegistrationRequestDto {
+public class AuthRequestDTO {
 
-    @LoginOrEmail
+    @NotBlank(message = "Please provide login")
     private String login;
 
-    @StrongPassword
+    @NotBlank(message = "Please provide password")
     private String password;
 
-    @NotBlank(message = "Please confirm the password")
-    private String passwordConfirm;
 }

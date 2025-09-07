@@ -1,7 +1,7 @@
 package dev.lqwd.service;
 
 import dev.lqwd.Validator;
-import dev.lqwd.dto.AuthRequestDto;
+import dev.lqwd.dto.AuthRequestDTO;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.DataBaseException;
@@ -36,7 +36,7 @@ public class AuthService {
         this.cookieService = cookieService;
     }
 
-    public Cookie createNewSession(AuthRequestDto authRequest){
+    public Cookie createNewSession(AuthRequestDTO authRequest){
 
         User user = userService.readByLogin(authRequest);
         String sessionId = sessionService.create(user);

@@ -1,8 +1,8 @@
-package dev.lqwd.controller;
+package dev.lqwd.controller.auth;
 
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.AuthService;
-import dev.lqwd.dto.AuthRequestDto;
+import dev.lqwd.dto.AuthRequestDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -36,12 +36,12 @@ public class AuthController {
             return "redirect:/home";
         }
 
-        model.addAttribute("authRequest", new AuthRequestDto());
+        model.addAttribute("authRequest", new AuthRequestDTO());
         return "sign-in";
     }
 
     @PostMapping("/sign-in")
-    public String authValidation(@Valid @ModelAttribute("authRequest") AuthRequestDto authRequest,
+    public String authValidation(@Valid @ModelAttribute("authRequest") AuthRequestDTO authRequest,
                                  BindingResult bindingResult,
                                  HttpServletResponse response,
                                  Model model) {

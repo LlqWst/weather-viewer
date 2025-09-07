@@ -1,4 +1,4 @@
-package dev.lqwd.controller;
+package dev.lqwd.controller.auth;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -3,13 +3,13 @@ package dev.lqwd.configuration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import lombok.NonNull;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
-
         servletContext.setInitParameter("spring.profiles.active", "dev");
         super.onStartup(servletContext);
     }

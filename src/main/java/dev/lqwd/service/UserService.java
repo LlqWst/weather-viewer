@@ -1,8 +1,8 @@
 package dev.lqwd.service;
 
 import dev.lqwd.Validator;
-import dev.lqwd.dto.AuthRequestDto;
-import dev.lqwd.dto.UserRegistrationRequestDto;
+import dev.lqwd.dto.AuthRequestDTO;
+import dev.lqwd.dto.UserRegistrationRequestDTO;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import dev.lqwd.exception.user_validation.UserAlreadyExistsException;
@@ -27,7 +27,7 @@ public class UserService {
     }
 
 
-    public User readByLogin(AuthRequestDto authRequest) throws IncorrectCredentialsException {
+    public User readByLogin(AuthRequestDTO authRequest) throws IncorrectCredentialsException {
 
         User user = userRepository.findByLogin(authRequest.getLogin())
                 .orElseGet(() -> {
@@ -39,7 +39,7 @@ public class UserService {
         return user;
     }
 
-    public void save(UserRegistrationRequestDto creationRequest) {
+    public void save(UserRegistrationRequestDTO creationRequest) {
 
         Validator.validatePasswordOnEquals(creationRequest);
         String hashedPassword = cryptService.getHashPassword(creationRequest.getPassword());

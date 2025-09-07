@@ -1,6 +1,6 @@
 package dev.lqwd;
 
-import dev.lqwd.dto.UserRegistrationRequestDto;
+import dev.lqwd.dto.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.UUID;
 public final class Validator {
 
     private static final String ERROR_MESSAGE_DIFFERENT_PASSWORDS = "Passwords don't match";
-    public static void validatePasswordOnEquals(UserRegistrationRequestDto creationRequest) {
+    public static void validatePasswordOnEquals(UserRegistrationRequestDTO creationRequest) {
 
         if (!creationRequest.getPassword().equals(creationRequest.getPasswordConfirm())) {
 

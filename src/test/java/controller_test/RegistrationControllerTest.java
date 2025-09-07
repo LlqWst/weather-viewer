@@ -2,7 +2,7 @@ package controller_test;
 
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.WebMvcConfig;
-import dev.lqwd.controller.RegistrationController;
+import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;

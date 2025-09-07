@@ -8,6 +8,24 @@
     <body>
         <h1>Привет, это Home page</h1>
 
+        <form th:action="@{/search}" method="get" class="search-form" th:object="${weatherRequest}">
+            <div class="input-group">
+                <input type="text"
+                       name="location"
+                       th:value="${param.location}"
+                       th:field="*{location}"
+                       class="form-control"
+                       placeholder="Поиск..."
+                       aria-label="Поиск">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Найти
+                </button>
+            </div>
+        </form>
+
+        <br>
+        <a th:href="@{/search}">Search</a>
+        <br>
         <form th:action="@{/sign-out}" method="post" style="display: inline;">
             <button type="submit" class="btn btn-link p-0">Logout</button>
         </form>

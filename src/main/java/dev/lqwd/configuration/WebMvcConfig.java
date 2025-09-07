@@ -1,5 +1,6 @@
 package dev.lqwd.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.lqwd.interceptor.LoggingInterceptor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;

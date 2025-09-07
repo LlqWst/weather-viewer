@@ -1,5 +1,6 @@
 package dev.lqwd.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,11 @@ import java.util.Properties;
 @PropertySource("classpath:app.properties")
 @EnableScheduling
 public class DevPersistenceConfig {
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
 
     @Bean
     public DataSource dataSource(
