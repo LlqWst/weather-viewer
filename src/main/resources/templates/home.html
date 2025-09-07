@@ -8,12 +8,11 @@
     <body>
         <h1>Привет, это Home page</h1>
 
-        <form th:action="@{/search}" method="get" class="search-form" th:object="${weatherRequest}">
+        <form th:action="@{/search}" method="get" class="search-form">
             <div class="input-group">
                 <input type="text"
                        name="location"
                        th:value="${param.location}"
-                       th:field="*{location}"
                        class="form-control"
                        placeholder="Поиск..."
                        aria-label="Поиск">

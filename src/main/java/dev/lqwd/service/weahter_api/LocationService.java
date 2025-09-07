@@ -2,6 +2,7 @@ package dev.lqwd.service.weahter_api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.lqwd.dto.ApiLocationsResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -14,19 +15,19 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class LocationService {
+public class LocationService extends WeatherApiService <ApiLocationsResponseDTO> {
 
-    private final ObjectMapper objectMapper;
-    private static final String appid = System.getenv("APP_ID");
+   // private final ObjectMapper objectMapper;
+    private static final String APP_ID = System.getenv("APP_ID");
     private static final String URL = "http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s";
 
-    public LocationService(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+//    public LocationService(ObjectMapper objectMapper) {
+//        this.objectMapper = objectMapper;
+//    }
 
     public List<ApiLocationsResponseDTO> getLocations(String location){
 
-        String paramURI = URL.formatted(location, appid);
+        String paramURI = URL.formatted(location, APP_ID);
 
         HttpClient client = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)

@@ -1,26 +1,66 @@
 package dev.lqwd.service.weahter_api;
 
-import dev.lqwd.dto.ApiLocationsResponseDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.lqwd.dto.ApiWeatherResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class WeatherApiService {
+public abstract class WeatherApiService<T> {
 
-    private final LocationService locationService;
-    private final WeatherService weatherService;
+    protected final ObjectMapper objectMapper = new ObjectMapper();
 
-    public WeatherApiService(LocationService locationService, WeatherService weatherService) {
-        this.locationService = locationService;
-        this.weatherService = weatherService;
-    }
+    protected static final String APP_ID = System.getenv("APP_ID");
 
-//    public Optional<ApiWeatherResponseDTO> getLocationsWithWeather(String location){
-//        List<ApiLocationsResponseDTO> locationsDTOs = locationService.getLocations(location);
-//        return weatherService.getWeather();
+//    public WeatherApiService(ObjectMapper objectMapper) {
+//        this.objectMapper = objectMapper;
 //    }
 
+    public List<T> getWeather(String uri, Class<T> clazz){
+
+        HttpClient client = HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .connectTimeout(Duration.ofSeconds(10))
+                .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(
+                    request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Status Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+
+            if (!clazz.isArray()){
+
+                return Collections.singletonList(
+                        objectMapper.readValue(response.body(), clazz));
+            }
+
+            List<T> locationDto= Arrays.asList(
+                    objectMapper.readValue(response.body(),
+                    objectMapper.getTypeFactory().constructArrayType(clazz)));
+
+            System.out.println(locationDto);
+
+            return locationDto;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Collections.emptyList();
+    }
 }
