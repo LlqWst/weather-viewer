@@ -1,4 +1,4 @@
-package dev.lqwd.dto;
+package dev.lqwd.dto.weather_api;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

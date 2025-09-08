@@ -1,7 +1,7 @@
 package dev.lqwd.controller.auth;
 
 
-import dev.lqwd.dto.UserRegistrationRequestDTO;
+import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.AuthService;
 import dev.lqwd.service.UserService;

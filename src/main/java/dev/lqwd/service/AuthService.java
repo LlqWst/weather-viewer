@@ -1,7 +1,7 @@
 package dev.lqwd.service;
 
 import dev.lqwd.Validator;
-import dev.lqwd.dto.AuthRequestDTO;
+import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.DataBaseException;

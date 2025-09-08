@@ -2,7 +2,7 @@ package dev.lqwd.controller.auth;
 
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.AuthService;
-import dev.lqwd.dto.AuthRequestDTO;
+import dev.lqwd.dto.auth.AuthRequestDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
 package dev.lqwd.service;
 
 import dev.lqwd.Validator;
-import dev.lqwd.dto.AuthRequestDTO;
-import dev.lqwd.dto.UserRegistrationRequestDTO;
+import dev.lqwd.dto.auth.AuthRequestDTO;
+import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import dev.lqwd.exception.user_validation.UserAlreadyExistsException;

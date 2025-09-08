@@ -30,11 +30,6 @@ import java.util.Properties;
 @EnableScheduling
 public class DevPersistenceConfig {
 
-//    @Bean
-//    public ObjectMapper objectMapper() {
-//        return new ObjectMapper();
-//    }
-
     @Bean
     public DataSource dataSource(
             @Value("${DB_USER:}") String user,

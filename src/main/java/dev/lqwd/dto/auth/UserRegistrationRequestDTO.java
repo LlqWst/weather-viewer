@@ -1,4 +1,4 @@
-package dev.lqwd.dto;
+package dev.lqwd.dto.auth;
 
 import dev.lqwd.annotation.LoginOrEmail;
 import dev.lqwd.annotation.StrongPassword;

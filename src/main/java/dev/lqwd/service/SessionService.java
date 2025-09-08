@@ -1,7 +1,9 @@
 package dev.lqwd.service;
 
+import dev.lqwd.Validator;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
+import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +35,10 @@ public class SessionService {
     }
 
     public boolean isPresent(UUID sessionId) {
-
-        return Optional.ofNullable(sessionId)
-                .flatMap(sessionRepository::findById)
+        if (sessionId == null){
+            return false;
+        }
+        return sessionRepository.findById(sessionId)
                 .isPresent();
     }
 

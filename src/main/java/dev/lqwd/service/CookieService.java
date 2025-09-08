@@ -13,14 +13,14 @@ import java.util.UUID;
 @Slf4j
 public class CookieService {
 
-    private static final int COOKIE_AGE = 60 * 30;
+    private static final int COOKIE_AGE_MINUTES = 60 * 30;
     private static final String SESSION_ID = "sessionId";
     private static final String EMPTY = "";
 
     public Cookie create(String sessionId) {
 
         Cookie cookie = new Cookie(SESSION_ID, sessionId);
-        cookie.setMaxAge(COOKIE_AGE);
+        cookie.setMaxAge(COOKIE_AGE_MINUTES);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
 

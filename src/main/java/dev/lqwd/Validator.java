@@ -1,6 +1,6 @@
 package dev.lqwd;
 
-import dev.lqwd.dto.UserRegistrationRequestDTO;
+import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;

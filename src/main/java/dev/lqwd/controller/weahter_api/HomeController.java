@@ -1,18 +1,16 @@
 package dev.lqwd.controller.weahter_api;
 
-import dev.lqwd.dto.AddLocationRequestDTO;
-import dev.lqwd.dto.ApiLocationsResponseDTO;
-import dev.lqwd.service.weahter_api.LocationService;
+import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
+import dev.lqwd.dto.weather_api.ApiLocationsResponseDTO;
+import dev.lqwd.dto.weather_api.ApiWeatherResponseDTO;
+import dev.lqwd.service.LocationService;
+import dev.lqwd.service.weahter_api.LocationApiService;
 import dev.lqwd.service.weahter_api.WeatherApiService;
-import dev.lqwd.service.weahter_api.WeatherService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,11 +18,18 @@ import java.util.List;
 @Controller
 public class HomeController {
 
+    private static final String URL_LOCATIONS = "http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s";
+    private static final String URL_WEATHER = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s";
+    private static final String APP_ID = System.getenv("APP_ID");
+    private final LocationApiService locationApiService;
+    private final WeatherApiService weatherService;
     private final LocationService locationService;
-    private final WeatherService weatherService;
 
-    public HomeController(WeatherService weatherService, LocationService locationService) {
+    public HomeController(WeatherApiService weatherService,
+                          LocationApiService locationApiService,
+                          LocationService locationService) {
         this.weatherService = weatherService;
+        this.locationApiService = locationApiService;
         this.locationService = locationService;
     }
 
@@ -41,13 +46,15 @@ public class HomeController {
             return "search-results";
         }
 
-        List<ApiLocationsResponseDTO> locationsDTO = locationService.getLocations(search);
+        String parameterizedURI = URL_LOCATIONS.formatted(search, APP_ID);
+        List<ApiLocationsResponseDTO> locationsDTO = locationApiService.getApiData(parameterizedURI);
         model.addAttribute("locations", locationsDTO);
         return "search-results";
     }
 
     @PostMapping("/add-location")
-    public String addLocation(@Valid @ModelAttribute("location") AddLocationRequestDTO locationDTO,
+    public String addLocation(@CookieValue(value = "sessionId") String sessionId,
+                              @Valid @ModelAttribute("location") AddLocationRequestDTO locationDTO,
                               BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()){
@@ -55,7 +62,14 @@ public class HomeController {
         }
 
         System.out.println(locationDTO);
-        weatherService.getWeather(locationDTO);
+        locationService.save(locationDTO, sessionId);
+
+        String latitude = String.valueOf(locationDTO.getLat());
+        String longitude = String.valueOf(locationDTO.getLon());
+        String parameterizedURI = URL_WEATHER.formatted(latitude, longitude, APP_ID);
+
+        List<ApiWeatherResponseDTO> locationsDTO = weatherService.getApiData(parameterizedURI);
+        System.out.println(locationsDTO);
         return "redirect:/home";
     }
 
