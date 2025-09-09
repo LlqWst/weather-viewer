@@ -5,7 +5,7 @@ import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
-import dev.lqwd.exception.user_validation.UserAlreadyExistsException;
+import dev.lqwd.exception.user_validation.EntityAlreadyExistsException;
 import dev.lqwd.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -53,7 +53,7 @@ public class UserService {
         } catch (ConstraintViolationException e) {
             if(e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
                 log.warn(ERROR_MESSAGE_USER_EXISTS);
-                throw new UserAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS);
+                throw new EntityAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS);
             }
             throw e;
         }

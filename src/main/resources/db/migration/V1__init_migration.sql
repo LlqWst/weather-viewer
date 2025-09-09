@@ -11,7 +11,8 @@ CREATE TABLE weather_viewer.locations (
     latitude NUMERIC(9, 6) CHECK (latitude BETWEEN -90 AND 90),
     longitude NUMERIC(10, 6) CHECK (longitude BETWEEN -180 AND 180),
     CONSTRAINT fk_user FOREIGN KEY (user_id)
-        REFERENCES weather_viewer.users (id) ON DELETE CASCADE
+        REFERENCES weather_viewer.users (id) ON DELETE CASCADE,
+    CONSTRAINT unique_user_location UNIQUE (user_id, latitude, longitude)
 );
 
 CREATE TABLE weather_viewer.sessions (

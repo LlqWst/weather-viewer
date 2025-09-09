@@ -15,6 +15,8 @@ public class ApiWeatherResponseDTO {
 
     private List<Weather> weather;
     private Main main;
+    private Sys sys;
+    private String name;
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     @AllArgsConstructor
@@ -34,5 +36,13 @@ public class ApiWeatherResponseDTO {
         private String temp;
         private String feels_like;
         private String humidity;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class Sys{
+        private String country;
     }
 }

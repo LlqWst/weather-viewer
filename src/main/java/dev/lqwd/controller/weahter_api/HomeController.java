@@ -3,6 +3,8 @@ package dev.lqwd.controller.weahter_api;
 import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
 import dev.lqwd.dto.weather_api.ApiLocationsResponseDTO;
 import dev.lqwd.dto.weather_api.ApiWeatherResponseDTO;
+import dev.lqwd.entity.Location;
+import dev.lqwd.exception.user_validation.EntityAlreadyExistsException;
 import dev.lqwd.service.LocationService;
 import dev.lqwd.service.weahter_api.LocationApiService;
 import dev.lqwd.service.weahter_api.WeatherApiService;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,7 +37,24 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-    public String home() {
+    public String home(@CookieValue(value = "sessionId") String sessionId,
+                       Model model) {
+
+        List<Location> locations = locationService.get(sessionId);
+        if (locations.isEmpty()){
+            return "home";
+        }
+
+        List<ApiWeatherResponseDTO> weatherResponseDTO = new ArrayList<>();
+        for(Location location : locations){
+            String latitude = String.valueOf(location.getLatitude());
+            String longitude = String.valueOf(location.getLongitude());
+            String parameterizedURI = URL_WEATHER.formatted(latitude, longitude, APP_ID);
+
+            weatherResponseDTO.add(weatherService.getApiData(parameterizedURI).get(0));
+        }
+
+        model.addAttribute("locationsWeather", weatherResponseDTO);
         return "home";
     }
 
@@ -46,8 +66,8 @@ public class HomeController {
             return "search-results";
         }
 
-        String parameterizedURI = URL_LOCATIONS.formatted(search, APP_ID);
-        List<ApiLocationsResponseDTO> locationsDTO = locationApiService.getApiData(parameterizedURI);
+        List<ApiLocationsResponseDTO> locationsDTO = locationApiService.getApiData(
+                URL_LOCATIONS.formatted(search, APP_ID));
         model.addAttribute("locations", locationsDTO);
         return "search-results";
     }
@@ -61,15 +81,7 @@ public class HomeController {
             return "redirect:/search-results";
         }
 
-        System.out.println(locationDTO);
         locationService.save(locationDTO, sessionId);
-
-        String latitude = String.valueOf(locationDTO.getLat());
-        String longitude = String.valueOf(locationDTO.getLon());
-        String parameterizedURI = URL_WEATHER.formatted(latitude, longitude, APP_ID);
-
-        List<ApiWeatherResponseDTO> locationsDTO = weatherService.getApiData(parameterizedURI);
-        System.out.println(locationsDTO);
         return "redirect:/home";
     }
 

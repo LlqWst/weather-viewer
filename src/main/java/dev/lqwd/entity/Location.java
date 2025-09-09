@@ -15,14 +15,18 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @Service
-@Table(name = "locations", schema = "weather_viewer")
+@Table(name = "locations", schema = "weather_viewer",
+        uniqueConstraints = @UniqueConstraint(
+                name = "unique_user_location",
+                columnNames = {"user_id", "latitude", "longitude"}
+))
 public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(optional = false)

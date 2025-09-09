@@ -22,8 +22,22 @@
             </div>
         </form>
 
+            <div class="row">
+                <div th:each="weather : ${locationsWeather}" class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title" th:text="${weather.main.temp}"></h3>
+                            <div class="card-text">
+                                <h4 th:text="${weather.name}"></h4> <h4 th:text="${weather.sys.country}"></h4>
+                                feels like <h5 th:text="${weather.main.feels_like}"></h5> <h5 th:text="${weather.weather.get(0).description}"></h5>
+                                Humidity: <h5 th:text="${weather.main.humidity}"></h5>%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <br>
-        <a th:href="@{/search}">Search</a>
         <br>
         <form th:action="@{/sign-out}" method="post" style="display: inline;">
             <button type="submit" class="btn btn-link p-0">Logout</button>

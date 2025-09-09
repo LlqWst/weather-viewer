@@ -5,16 +5,20 @@ import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.BadRequestException;
-import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.LocationRepository;
 import dev.lqwd.repository.SessionRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
+@Slf4j
 public class LocationService {
 
+    private static final String ERROR_MESSAGE_LOCATION_ADDED = "Location already added for user: {}";
     private final LocationRepository locationRepository;
     private final SessionRepository sessionRepository;
 
@@ -26,17 +30,33 @@ public class LocationService {
     }
 
     public void save(AddLocationRequestDTO locationDTO, String uuidFromCookie) {
+        User user = getUser(uuidFromCookie);
 
-        User user = Validator.parseUUID(uuidFromCookie)
+        try {
+            locationRepository.save(Location.builder()
+                    .user(user)
+                    .name(locationDTO.getName())
+                    .latitude(locationDTO.getLat())
+                    .longitude(locationDTO.getLon())
+                    .build());
+        }  catch (ConstraintViolationException e) {
+            if(e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
+                log.warn(ERROR_MESSAGE_LOCATION_ADDED, user);
+                return;
+            }
+            throw e;
+        }
+    }
+
+    public List<Location> get(String uuidFromCookie) {
+        User user = getUser(uuidFromCookie);
+
+        return locationRepository.findAllByUserId(user);
+    }
+
+    private User getUser(String uuidFromCookie) {
+        return Validator.parseUUID(uuidFromCookie)
                 .flatMap(sessionRepository::findUserById)
-                .orElseThrow(() -> new DataBaseException("Error during find User by UUID: " + uuidFromCookie));
-
-        locationRepository.save(Location.builder()
-                .user(user)
-                .name(locationDTO.getName())
-                .latitude(locationDTO.getLat())
-                .longitude(locationDTO.getLon())
-                .build());
-
+                .orElseThrow(() -> new BadRequestException("Error during find User by UUID: " + uuidFromCookie));
     }
 }
