@@ -6,7 +6,7 @@
     </head>
 
     <body>
-        <h1>Привет, это Home page</h1>
+        <h1>Home</h1>
 
         <form th:action="@{/search}" method="get" class="search-form">
             <div class="input-group">
@@ -29,11 +29,22 @@
                              alt="icon"
                              loading="lazy">
                         <div class="card-body">
-                            <h3 class="card-title" th:text="${weather.temp}"></h3>
+                            <h2 class="card-title">
+                                <span th:text="${weather.temp}"></span>°C
+                            </h2>
                             <div class="card-text">
-                                <h4 th:text="${weather.name}"></h4> <h4 th:text="${weather.country}"></h4>
-                                feels like <h5 th:text="${weather.feelsLike}"></h5> <h5 th:text="${weather.description}"></h5>
-                                Humidity: <h5 th:text="${weather.humidity}"></h5>%
+                                <h3>
+                                    <span th:text="${weather.name}"></span>,
+                                    <span th:text="${weather.country}"></span>
+                                </h3>
+                                <p> Feels like
+                                    <span th:text="${weather.feelsLike}"></span>°C.
+                                    <span th:text="${weather.description}"></span>
+                                </p>
+                                <p>
+                                    Humidity:
+                                    <span th:text="${weather.humidity}"></span>%
+                                </p>
                             </div>
                             <form th:action="@{/delete-location}" method="post" style="display: inline;">
                                 <button type="submit" class="btn btn-link p-0">delete</button>

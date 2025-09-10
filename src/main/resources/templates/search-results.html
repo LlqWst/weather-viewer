@@ -6,7 +6,7 @@
     </head>
 
     <body>
-        <h1>Результаты поиска</h1>
+        <h1>Search result</h1>
 
         <form th:action="@{/search}" method="get" class="search-form">
             <div class="input-group">
@@ -29,14 +29,14 @@
             <div th:each="location : ${locations}" class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title" th:text="${location.name}">Location Name</h5>
+                        <h3 class="card-title" th:text="${location.name}">Location Name</h3>
                         <div class="card-text">
-                            <p><strong>Coordinates:</strong>
+                            <p>Coordinates:
                                 <span th:text="${location.lat}">lat</span>,
                                 <span th:text="${location.lon}">lon</span>
                             </p>
-                            <p><strong>Country:</strong> <span th:text="${location.country}">Country</span></p>
-                            <p th:if="${location.state}"><strong>State:</strong> <span th:text="${location.state}">State</span></p>
+                            <p>Country: <span th:text="${location.country}">Country</span></p>
+                            <p th:if="${location.state}">State: <span th:text="${location.state}">State</span></p>
                         </div>
                         <form th:action="@{/add-location}" method="post" style="display: inline;">
                             <input type="hidden" name="name" th:value="${location.name}">
@@ -46,6 +46,7 @@
                         </form>
                     </div>
                 </div>
+                <br>
             </div>
         </div>
 

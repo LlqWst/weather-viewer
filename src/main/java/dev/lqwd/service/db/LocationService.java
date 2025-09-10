@@ -52,12 +52,12 @@ public class LocationService {
         return locationRepository.findAllByUserId(user);
     }
 
-    public void delete(String id) {
+    public void delete(String uuidFromCookie, String id) {
         try {
             long parsedId = Long.parseLong(id);
-            locationRepository.deleteById(parsedId);
+            locationRepository.deleteByUserAndId(getUser(uuidFromCookie), parsedId);
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Incorrect Id for deletion: " + id);
+            throw new BadRequestException("Incorrect id for deletion: " + id);
         }
 
     }

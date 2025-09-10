@@ -3,7 +3,6 @@ package dev.lqwd.controller.weahter_api;
 import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
 import dev.lqwd.dto.weather_api.ApiLocationResponseDTO;
 import dev.lqwd.dto.weather_api.WeatherOfLocationResponseDTO;
-import dev.lqwd.entity.Location;
 import dev.lqwd.service.WeatherService;
 import dev.lqwd.service.db.LocationService;
 import dev.lqwd.service.weahter_api.LocationApiService;
@@ -70,13 +69,14 @@ public class HomeController {
     }
 
     @PostMapping("/delete-location")
-    public String deleteLocation(@RequestParam("id") String id) {
+    public String deleteLocation(@CookieValue(value = "sessionId") String sessionId,
+            @RequestParam("id") String id) {
 
         if(id == null || id.isBlank()){
             log.warn("try to delete location without id");
             return "redirect:/home";
         }
-        locationService.delete(id);
+        locationService.delete(sessionId, id);
         return "redirect:/home";
     }
 
