@@ -1,7 +1,7 @@
 package dev.lqwd.controller.auth;
 
 import dev.lqwd.exception.user_validation.UserValidationException;
-import dev.lqwd.service.AuthService;
+import dev.lqwd.service.auth.AuthService;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -24,7 +24,6 @@ public class AuthController {
 
     @GetMapping("/")
     public String redirectToSignIn(){
-
         return "redirect:/sign-in";
     }
 
@@ -35,7 +34,6 @@ public class AuthController {
         if (authService.hasValidSession(sessionId)) {
             return "redirect:/home";
         }
-
         model.addAttribute("authRequest", new AuthRequestDTO());
         return "sign-in";
     }
@@ -49,12 +47,10 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             return "sign-in";
         }
-
         try {
             response.addCookie(authService
                     .createNewSession(authRequest));
             return "redirect:/home";
-
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
             return "sign-in";

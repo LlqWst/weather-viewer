@@ -1,6 +1,6 @@
-package dev.lqwd.service;
+package dev.lqwd.service.auth;
 
-import dev.lqwd.Validator;
+import dev.lqwd.utils.Validator;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,6 @@ public class CookieService {
     private static final String EMPTY = "";
 
     public Cookie create(String sessionId) {
-
         Cookie cookie = new Cookie(SESSION_ID, sessionId);
         cookie.setMaxAge(COOKIE_AGE_MINUTES);
         cookie.setPath("/");
@@ -28,7 +27,6 @@ public class CookieService {
     }
 
     public Cookie delete() {
-
         Cookie cookie = new Cookie(SESSION_ID, EMPTY);
         cookie.setMaxAge(0);
         cookie.setPath("/");

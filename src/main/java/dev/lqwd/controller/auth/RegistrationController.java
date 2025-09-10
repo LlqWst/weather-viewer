@@ -3,8 +3,8 @@ package dev.lqwd.controller.auth;
 
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.UserValidationException;
-import dev.lqwd.service.AuthService;
-import dev.lqwd.service.UserService;
+import dev.lqwd.service.auth.AuthService;
+import dev.lqwd.service.db.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;

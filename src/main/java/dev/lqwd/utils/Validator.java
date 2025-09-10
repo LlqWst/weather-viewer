@@ -1,4 +1,4 @@
-package dev.lqwd;
+package dev.lqwd.utils;
 
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
@@ -14,7 +14,6 @@ public final class Validator {
 
     private static final String ERROR_MESSAGE_DIFFERENT_PASSWORDS = "Passwords don't match";
     public static void validatePasswordOnEquals(UserRegistrationRequestDTO creationRequest) {
-
         if (!creationRequest.getPassword().equals(creationRequest.getPasswordConfirm())) {
 
             log.warn(ERROR_MESSAGE_DIFFERENT_PASSWORDS);
@@ -23,7 +22,6 @@ public final class Validator {
     }
 
     public static Optional<UUID> parseUUID(String id) {
-
         try {
             return Optional.ofNullable(id).map(UUID::fromString);
         } catch (IllegalArgumentException e) {

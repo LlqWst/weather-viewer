@@ -1,6 +1,6 @@
-package dev.lqwd.service;
+package dev.lqwd.service.db;
 
-import dev.lqwd.Validator;
+import dev.lqwd.utils.Validator;
 import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
@@ -31,7 +31,6 @@ public class LocationService {
 
     public void save(AddLocationRequestDTO locationDTO, String uuidFromCookie) {
         User user = getUser(uuidFromCookie);
-
         try {
             locationRepository.save(Location.builder()
                     .user(user)
@@ -50,8 +49,17 @@ public class LocationService {
 
     public List<Location> get(String uuidFromCookie) {
         User user = getUser(uuidFromCookie);
-
         return locationRepository.findAllByUserId(user);
+    }
+
+    public void delete(String id) {
+        try {
+            long parsedId = Long.parseLong(id);
+            locationRepository.deleteById(parsedId);
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("Incorrect Id for deletion: " + id);
+        }
+
     }
 
     private User getUser(String uuidFromCookie) {

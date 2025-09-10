@@ -1,34 +1,33 @@
 package dev.lqwd.controller.weahter_api;
 
 import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
-import dev.lqwd.dto.weather_api.ApiLocationsResponseDTO;
-import dev.lqwd.dto.weather_api.ApiWeatherResponseDTO;
+import dev.lqwd.dto.weather_api.ApiLocationResponseDTO;
+import dev.lqwd.dto.weather_api.WeatherOfLocationResponseDTO;
 import dev.lqwd.entity.Location;
-import dev.lqwd.exception.user_validation.EntityAlreadyExistsException;
-import dev.lqwd.service.LocationService;
+import dev.lqwd.service.WeatherService;
+import dev.lqwd.service.db.LocationService;
 import dev.lqwd.service.weahter_api.LocationApiService;
-import dev.lqwd.service.weahter_api.WeatherApiService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Controller
+@Slf4j
 public class HomeController {
 
     private static final String URL_LOCATIONS = "http://api.openweathermap.org/geo/1.0/direct?q=%s&limit=5&appid=%s";
-    private static final String URL_WEATHER = "https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s";
     private static final String APP_ID = System.getenv("APP_ID");
     private final LocationApiService locationApiService;
-    private final WeatherApiService weatherService;
+    private final WeatherService weatherService;
     private final LocationService locationService;
 
-    public HomeController(WeatherApiService weatherService,
+    public HomeController(WeatherService weatherService,
                           LocationApiService locationApiService,
                           LocationService locationService) {
         this.weatherService = weatherService;
@@ -40,20 +39,7 @@ public class HomeController {
     public String home(@CookieValue(value = "sessionId") String sessionId,
                        Model model) {
 
-        List<Location> locations = locationService.get(sessionId);
-        if (locations.isEmpty()){
-            return "home";
-        }
-
-        List<ApiWeatherResponseDTO> weatherResponseDTO = new ArrayList<>();
-        for(Location location : locations){
-            String latitude = String.valueOf(location.getLatitude());
-            String longitude = String.valueOf(location.getLongitude());
-            String parameterizedURI = URL_WEATHER.formatted(latitude, longitude, APP_ID);
-
-            weatherResponseDTO.add(weatherService.getApiData(parameterizedURI).get(0));
-        }
-
+        List<WeatherOfLocationResponseDTO> weatherResponseDTO = weatherService.getWeatherForUser(sessionId);
         model.addAttribute("locationsWeather", weatherResponseDTO);
         return "home";
     }
@@ -65,8 +51,7 @@ public class HomeController {
         if (search == null || search.isBlank()){
             return "search-results";
         }
-
-        List<ApiLocationsResponseDTO> locationsDTO = locationApiService.getApiData(
+        List<ApiLocationResponseDTO> locationsDTO = locationApiService.fetchApiData(
                 URL_LOCATIONS.formatted(search, APP_ID));
         model.addAttribute("locations", locationsDTO);
         return "search-results";
@@ -80,8 +65,18 @@ public class HomeController {
         if (bindingResult.hasErrors()){
             return "redirect:/search-results";
         }
-
         locationService.save(locationDTO, sessionId);
+        return "redirect:/home";
+    }
+
+    @PostMapping("/delete-location")
+    public String deleteLocation(@RequestParam("id") String id) {
+
+        if(id == null || id.isBlank()){
+            log.warn("try to delete location without id");
+            return "redirect:/home";
+        }
+        locationService.delete(id);
         return "redirect:/home";
     }
 

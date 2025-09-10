@@ -1,11 +1,13 @@
-package dev.lqwd.service;
+package dev.lqwd.service.auth;
 
-import dev.lqwd.Validator;
+import dev.lqwd.utils.Validator;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
+import dev.lqwd.service.db.SessionService;
+import dev.lqwd.service.db.UserService;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -54,7 +56,6 @@ public class AuthService {
 
     @Scheduled(fixedRate = SESSION_VALIDATION_INTERVAL_MS)
     public int cleanupExpiredSessions() {
-
         LocalDateTime now = LocalDateTime.now();
         int deletedCount = sessionRepository.deleteByExpiresAtBefore(now);
 
@@ -63,14 +64,12 @@ public class AuthService {
     }
 
     public boolean hasValidSession(String sessionId) {
-
         return Validator.parseUUID(sessionId)
                 .filter(sessionService::isPresent)
                 .isPresent();
     }
 
     public Cookie closeSession(String sessionId){
-
         Validator.parseUUID(sessionId)
                 .ifPresentOrElse(
                         sessionService::delete,

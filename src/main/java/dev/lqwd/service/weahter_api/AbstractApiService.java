@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface AbstractApiService<T> {
 
-    List<T> getApiData(String uri);
+    List<T> fetchApiData(String uri);
 }

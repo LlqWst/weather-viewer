@@ -32,7 +32,7 @@ public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T>
     }
 
     @Override
-    public List<T> getApiData(String uri) {
+    public List<T> fetchApiData(String uri) {
         try {
             HttpResponse<String> response = executeRequest(uri);
 

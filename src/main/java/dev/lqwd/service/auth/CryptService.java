@@ -1,4 +1,4 @@
-package dev.lqwd.service;
+package dev.lqwd.service.auth;
 
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import lombok.extern.slf4j.Slf4j;

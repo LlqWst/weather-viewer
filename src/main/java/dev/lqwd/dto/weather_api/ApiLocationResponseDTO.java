@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiLocationsResponseDTO {
+public class ApiLocationResponseDTO {
 
     private String name;
     private BigDecimal lat;

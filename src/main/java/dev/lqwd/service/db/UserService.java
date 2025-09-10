@@ -1,12 +1,13 @@
-package dev.lqwd.service;
+package dev.lqwd.service.db;
 
-import dev.lqwd.Validator;
+import dev.lqwd.utils.Validator;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import dev.lqwd.exception.user_validation.EntityAlreadyExistsException;
 import dev.lqwd.repository.UserRepository;
+import dev.lqwd.service.auth.CryptService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ public class UserService {
 
 
     public User readByLogin(AuthRequestDTO authRequest) throws IncorrectCredentialsException {
-
         User user = userRepository.findByLogin(authRequest.getLogin())
                 .orElseGet(() -> {
                     log.warn(ERROR_MESSAGE_INCORRECT_LOGIN);
@@ -40,7 +40,6 @@ public class UserService {
     }
 
     public void save(UserRegistrationRequestDTO creationRequest) {
-
         Validator.validatePasswordOnEquals(creationRequest);
         String hashedPassword = cryptService.getHashPassword(creationRequest.getPassword());
 
@@ -49,7 +48,6 @@ public class UserService {
                     .login(creationRequest.getLogin())
                     .password(hashedPassword)
                     .build());
-
         } catch (ConstraintViolationException e) {
             if(e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
                 log.warn(ERROR_MESSAGE_USER_EXISTS);

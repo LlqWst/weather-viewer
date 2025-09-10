@@ -1,7 +1,7 @@
 package dev.lqwd.interceptor;
 
-import dev.lqwd.service.CookieService;
-import dev.lqwd.service.SessionService;
+import dev.lqwd.service.auth.CookieService;
+import dev.lqwd.service.db.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;

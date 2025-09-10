@@ -1,9 +1,7 @@
-package dev.lqwd.service;
+package dev.lqwd.service.db;
 
-import dev.lqwd.Validator;
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
-import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +23,6 @@ public class SessionService {
     }
 
     public String create(User user) {
-
         return Optional.of(sessionRepository.save(Session.builder()
                                 .user(user)
                                 .build())
@@ -44,7 +41,6 @@ public class SessionService {
 
 
     public void delete(UUID sessionId) {
-
         if (isPresent(sessionId)) {
             sessionRepository.deleteById(sessionId);
         } else {
