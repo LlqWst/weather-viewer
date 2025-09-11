@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class WeatherOfLocationResponseDTO {
+public class CurrentWeatherResponseDTO {
 
     private Long id;
     private String iconUrl;

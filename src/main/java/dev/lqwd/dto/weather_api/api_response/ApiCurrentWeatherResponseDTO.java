@@ -1,4 +1,4 @@
-package dev.lqwd.dto.weather_api;
+package dev.lqwd.dto.weather_api.api_response;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiCurrentWeatherDTO {
+public class ApiCurrentWeatherResponseDTO {
 
     private List<Weather> weather;
     private Main main;

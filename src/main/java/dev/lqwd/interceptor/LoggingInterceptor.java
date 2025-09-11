@@ -1,7 +1,7 @@
 package dev.lqwd.interceptor;
 
 import dev.lqwd.service.auth.CookieService;
-import dev.lqwd.service.db.SessionService;
+import dev.lqwd.service.repository_service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,6 @@ public class LoggingInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {
 
         if (!hasValidSession(request)) {
-
             response.sendRedirect(SIGN_IN_URL);
             return false;
         }
@@ -34,10 +33,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
     }
 
     private boolean hasValidSession(HttpServletRequest request) {
-
         return cookieService.getSessionId(request.getCookies())
                 .filter(sessionService::isPresent)
                 .isPresent();
     }
-
 }

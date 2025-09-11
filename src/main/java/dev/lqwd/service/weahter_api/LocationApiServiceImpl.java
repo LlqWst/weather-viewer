@@ -1,6 +1,6 @@
 package dev.lqwd.service.weahter_api;
 
-import dev.lqwd.dto.weather_api.ApiLocationResponseDTO;
+import dev.lqwd.dto.weather_api.api_response.ApiLocationResponseDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,4 +9,5 @@ public class LocationApiServiceImpl extends AbstractApiServiceImpl<ApiLocationRe
     public LocationApiServiceImpl() {
         super(ApiLocationResponseDTO.class);
     }
+
 }

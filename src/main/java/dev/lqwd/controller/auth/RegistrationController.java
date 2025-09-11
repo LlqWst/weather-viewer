@@ -4,8 +4,7 @@ package dev.lqwd.controller.auth;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.auth.AuthService;
-import dev.lqwd.service.db.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+import dev.lqwd.service.repository_service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +19,6 @@ public class RegistrationController {
     private final AuthService authService;
 
     public RegistrationController(UserService userService, AuthService authService) {
-
         this.userService = userService;
         this.authService = authService;
     }
@@ -40,13 +38,11 @@ public class RegistrationController {
     @PostMapping("/sign-up")
     public String registration(@Valid @ModelAttribute("userCreationRequest") UserRegistrationRequestDTO registrationRequest,
                                BindingResult bindingResult,
-                               Model model,
-                               HttpServletResponse response) {
+                               Model model) {
 
         if (bindingResult.hasErrors()) {
             return "sign-up";
         }
-
         try {
             userService.save(registrationRequest);
             return "redirect:/home";

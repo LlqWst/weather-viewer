@@ -7,7 +7,7 @@ import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.repository.UserRepository;
-import dev.lqwd.service.db.SessionService;
+import dev.lqwd.service.repository_service.SessionService;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

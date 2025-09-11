@@ -1,4 +1,4 @@
-package dev.lqwd.service.db;
+package dev.lqwd.service.repository_service;
 
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;

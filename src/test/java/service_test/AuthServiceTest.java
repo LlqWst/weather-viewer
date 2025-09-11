@@ -7,7 +7,7 @@ import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.repository.UserRepository;
 import dev.lqwd.service.auth.AuthService;
-import dev.lqwd.service.db.SessionService;
+import dev.lqwd.service.repository_service.SessionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

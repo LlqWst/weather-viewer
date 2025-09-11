@@ -1,7 +1,7 @@
 package dev.lqwd.mapper;
 
-import dev.lqwd.dto.weather_api.ApiCurrentWeatherDTO;
-import dev.lqwd.dto.weather_api.WeatherOfLocationResponseDTO;
+import dev.lqwd.dto.weather_api.api_response.ApiCurrentWeatherResponseDTO;
+import dev.lqwd.dto.weather_api.CurrentWeatherResponseDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -9,9 +9,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Mapper
-public interface WeatherOfLocationMapper {
+public interface CurrentWeatherMapper {
 
-    WeatherOfLocationMapper INSTANCE = Mappers.getMapper(WeatherOfLocationMapper.class);
+    CurrentWeatherMapper INSTANCE = Mappers.getMapper(CurrentWeatherMapper.class);
     String ICON_URL = "https://openweathermap.org/img/wn/%s@2x.png";
 
     @BeanMapping(ignoreByDefault = true)
@@ -19,7 +19,7 @@ public interface WeatherOfLocationMapper {
     @Mapping(source = "sys.country", target = "country")
     @Mapping(source = "main.feelsLike", target = "feelsLike", qualifiedByName = "roundToInteger")
     @Mapping(source = "main.humidity", target = "humidity")
-    WeatherOfLocationResponseDTO toResponseDto(ApiCurrentWeatherDTO weatherOfLocationDTO);
+    CurrentWeatherResponseDTO toResponseDto(ApiCurrentWeatherResponseDTO weatherOfLocationDTO);
 
     @Named("roundToInteger")
     default BigDecimal round(BigDecimal value){
@@ -30,12 +30,12 @@ public interface WeatherOfLocationMapper {
     }
 
     @AfterMapping
-    default void mapCurrentWeatherFields(ApiCurrentWeatherDTO weatherDTO, @MappingTarget WeatherOfLocationResponseDTO responseDTO){
+    default void mapCurrentWeatherFields(ApiCurrentWeatherResponseDTO weatherDTO, @MappingTarget CurrentWeatherResponseDTO responseDTO){
         if (weatherDTO.getWeather() == null || weatherDTO.getWeather().isEmpty()){
             return;
         }
 
-        ApiCurrentWeatherDTO.Weather weather = weatherDTO.getWeather().get(0);
+        ApiCurrentWeatherResponseDTO.Weather weather = weatherDTO.getWeather().get(0);
         String description = weather.getDescription();
         String icon = weather.getIcon();
 

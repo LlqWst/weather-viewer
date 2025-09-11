@@ -1,4 +1,4 @@
-package dev.lqwd.service.db;
+package dev.lqwd.service.repository_service;
 
 import dev.lqwd.utils.Validator;
 import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
