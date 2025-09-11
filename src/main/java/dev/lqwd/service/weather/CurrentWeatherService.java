@@ -1,11 +1,11 @@
-package dev.lqwd.service;
+package dev.lqwd.service.weather;
 
-import dev.lqwd.dto.weather_api.api_response.ApiCurrentWeatherResponseDTO;
-import dev.lqwd.dto.weather_api.CurrentWeatherResponseDTO;
+import dev.lqwd.dto.weather.api_response.ApiCurrentWeatherResponseDTO;
+import dev.lqwd.dto.weather.CurrentWeatherResponseDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.mapper.CurrentWeatherMapper;
 import dev.lqwd.service.repository_service.LocationService;
-import dev.lqwd.service.weahter_api.CurrentWeatherApiService;
+import dev.lqwd.service.weahter_api.ApiCurrentWeatherService;
 import dev.lqwd.uri_builder.UriApiWeatherBuilder;
 import org.springframework.stereotype.Service;
 
@@ -13,17 +13,17 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class WeatherService {
+public class CurrentWeatherService {
 
-    private final CurrentWeatherMapper weatherOfLocationMapper = CurrentWeatherMapper.INSTANCE;
+    private final CurrentWeatherMapper currentWeatherMapper = CurrentWeatherMapper.INSTANCE;
     private final LocationService locationService;
-    private final CurrentWeatherApiService currentWeatherApiService;
+    private final ApiCurrentWeatherService apiCurrentWeatherService;
 
-    public WeatherService(LocationService locationService,
-                          CurrentWeatherApiService currentWeatherApiService) {
+    public CurrentWeatherService(LocationService locationService,
+                                 ApiCurrentWeatherService apiCurrentWeatherService) {
 
         this.locationService = locationService;
-        this.currentWeatherApiService = currentWeatherApiService;
+        this.apiCurrentWeatherService = apiCurrentWeatherService;
     }
 
     public List<CurrentWeatherResponseDTO> getWeatherForUser(String sessionId) {
@@ -35,14 +35,15 @@ public class WeatherService {
     }
 
     private List<CurrentWeatherResponseDTO> getCurrentWeather(List<Location> locations) {
-        return locations.stream().map(location -> {
+        return locations.stream()
+                .map(location -> {
                     String url = new UriApiWeatherBuilder(location).build();
-                    ApiCurrentWeatherResponseDTO weatherData = currentWeatherApiService.fetchApiData(url).get(0);
-                    CurrentWeatherResponseDTO responseDto = weatherOfLocationMapper.toResponseDto(weatherData);
+                    ApiCurrentWeatherResponseDTO weatherData = apiCurrentWeatherService.fetchApiData(url).get(0);
+                    CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData);
                     responseDto.setId(location.getId());
                     responseDto.setName(location.getName());
                     return responseDto;
-        })
+                })
                 .toList();
     }
 }

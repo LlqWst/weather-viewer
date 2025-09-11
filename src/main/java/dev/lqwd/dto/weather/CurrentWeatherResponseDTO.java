@@ -1,4 +1,4 @@
-package dev.lqwd.dto.weather_api;
+package dev.lqwd.dto.weather;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,5 @@
 package dev.lqwd.configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +60,6 @@ public class DevPersistenceConfig {
         hikariConfig.setMaxLifetime(maxLifetime);
 
         log.info("HikariCP Config: {}", hikariConfig);
-
         return new HikariDataSource(hikariConfig);
     }
 
@@ -88,12 +86,10 @@ public class DevPersistenceConfig {
             @Qualifier("properties") Properties hibernateProperties) {
 
         LocalContainerEntityManagerFactoryBean containerEntityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-
         containerEntityManagerFactory.setDataSource(dataSource);
         containerEntityManagerFactory.setPackagesToScan("dev.lqwd.entity");
         containerEntityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         containerEntityManagerFactory.setJpaProperties(hibernateProperties);
-
         return containerEntityManagerFactory;
     }
 
@@ -104,11 +100,9 @@ public class DevPersistenceConfig {
             @Value("${hibernate.hbm2ddl.auto}") String hbm2ddl) {
 
         Properties properties = new Properties();
-
         properties.put("hibernate.show_sql", isShowSql);
         properties.put("hibernate.format_sql", isFormatSql);
         properties.put("hibernate.hbm2ddl.auto", hbm2ddl);
-
         return properties;
     }
 
@@ -117,14 +111,11 @@ public class DevPersistenceConfig {
             LocalContainerEntityManagerFactoryBean containerEntityManagerFactory) {
 
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-
         if (containerEntityManagerFactory.getObject() == null) {
             log.error("EntityManagerFactory is not initialized, {}", containerEntityManagerFactory);
             throw new IllegalStateException("EntityManagerFactory is not initialized");
         }
-
         transactionManager.setEntityManagerFactory(containerEntityManagerFactory.getObject());
-
         return transactionManager;
 
     }

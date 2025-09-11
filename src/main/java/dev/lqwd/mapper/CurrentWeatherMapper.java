@@ -1,7 +1,7 @@
 package dev.lqwd.mapper;
 
-import dev.lqwd.dto.weather_api.api_response.ApiCurrentWeatherResponseDTO;
-import dev.lqwd.dto.weather_api.CurrentWeatherResponseDTO;
+import dev.lqwd.dto.weather.api_response.ApiCurrentWeatherResponseDTO;
+import dev.lqwd.dto.weather.CurrentWeatherResponseDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

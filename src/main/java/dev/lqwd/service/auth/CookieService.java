@@ -35,7 +35,6 @@ public class CookieService {
     }
 
     public Optional<UUID> getSessionId(Cookie[] cookies) {
-
         return Optional.ofNullable(cookies)
                 .stream()
                 .flatMap(Arrays::stream)

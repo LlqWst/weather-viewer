@@ -1,7 +1,7 @@
 package dev.lqwd.service.repository_service;
 
 import dev.lqwd.utils.Validator;
-import dev.lqwd.dto.weather_api.AddLocationRequestDTO;
+import dev.lqwd.dto.weather.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.BadRequestException;
