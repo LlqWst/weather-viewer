@@ -5,6 +5,7 @@ import dev.lqwd.service.auth.AuthService;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,13 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @Slf4j
+@AllArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
-
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @GetMapping("/")
     public String redirectToSignIn(){
@@ -31,9 +29,6 @@ public class AuthController {
     public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                  Model model) {
 
-        if (authService.hasValidSession(sessionId)) {
-            return "redirect:/home";
-        }
         model.addAttribute("authRequest", new AuthRequestDTO());
         return "sign-in";
     }
@@ -48,9 +43,9 @@ public class AuthController {
             return "sign-in";
         }
         try {
-            response.addCookie(authService
-                    .createNewSession(authRequest));
+            response.addCookie(authService.createNewSession(authRequest));
             return "redirect:/home";
+
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
             return "sign-in";
@@ -62,8 +57,7 @@ public class AuthController {
     public String signOut(@CookieValue(value = "sessionId", required = false) String sessionId,
                           HttpServletResponse response) {
 
-        response.addCookie(authService
-                .closeSession(sessionId));
+        response.addCookie(authService.closeSession(sessionId));
         return "redirect:/sign-in";
     }
 

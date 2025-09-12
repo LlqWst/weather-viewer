@@ -2,7 +2,7 @@ package dev.lqwd.uri_builder;
 
 public class UriApiLocationBuilder extends AbstractUriApiBuilderImpl {
 
-    private static final String URL_LOCATIONS = "http://api.openweathermap.org/geo/1.0/direct";
+    private static final String URL_LOCATIONS = "https://api.openweathermap.org/geo/1.0/direct";
     private static final int MAX_LIMIT = 5;
     private final String location;
 

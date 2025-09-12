@@ -6,6 +6,7 @@ import dev.lqwd.exception.user_validation.UserValidationException;
 import dev.lqwd.service.auth.AuthService;
 import dev.lqwd.service.repository_service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,23 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
+@AllArgsConstructor
 public class RegistrationController {
 
     private final UserService userService;
-    private final AuthService authService;
-
-    public RegistrationController(UserService userService, AuthService authService) {
-        this.userService = userService;
-        this.authService = authService;
-    }
 
     @GetMapping("/sign-up")
     public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionId,
                                        Model model) {
-
-        if (authService.hasValidSession(sessionId)) {
-            return "redirect:/home";
-        }
 
         model.addAttribute("userCreationRequest", new UserRegistrationRequestDTO());
         return "sign-up";

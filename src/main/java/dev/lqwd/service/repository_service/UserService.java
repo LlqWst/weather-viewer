@@ -51,7 +51,7 @@ public class UserService {
         } catch (ConstraintViolationException e) {
             if(e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
                 log.warn(ERROR_MESSAGE_USER_EXISTS);
-                throw new EntityAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS);
+                throw new EntityAlreadyExistsException(ERROR_MESSAGE_USER_EXISTS, e);
             }
             throw e;
         }

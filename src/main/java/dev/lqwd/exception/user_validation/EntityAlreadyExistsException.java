@@ -5,4 +5,8 @@ public class EntityAlreadyExistsException extends UserValidationException {
         super(message);
     }
 
+    public EntityAlreadyExistsException(String message, Exception e) {
+        super(message, e);
+    }
+
 }
