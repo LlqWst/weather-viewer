@@ -1,6 +1,6 @@
 package dev.lqwd.configuration;
 
-import dev.lqwd.interceptor.LoggingInterceptor;
+import dev.lqwd.interceptor.AuthInterceptor;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +24,8 @@ import java.util.List;
 @ComponentScan({
         "dev.lqwd.controller",
         "dev.lqwd.interceptor",
-        "dev.lqwd.exception_handler"
+        "dev.lqwd.exception_handler",
+        "dev.lqwd.configuration"
 })
 @PropertySource("classpath:app.properties")
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -33,6 +34,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Value("${webMvc.corsRegistry.methods}")
     private String[] allowedMethods;
+
+    @Value("${webMvc.corsRegistry.applicationBasePath}")
+    private String applicationBasePath ;
 
     @Value("${webMvc.corsRegistry.registryMapping}")
     private String registryMapping;
@@ -58,8 +62,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${webMvc.isSpringELCompiler}")
     private boolean isSpringELCompiler;
 
-    public WebMvcConfig(LoggingInterceptor loggingInterceptor) {
-        this.loggingInterceptor = loggingInterceptor;
+    public WebMvcConfig(AuthInterceptor authInterceptor) {
+        this.authInterceptor = authInterceptor;
     }
 
     @Bean
@@ -72,11 +76,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return validator();
     }
 
-    private final LoggingInterceptor loggingInterceptor;
+    private final AuthInterceptor authInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loggingInterceptor)
+        registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**");
     }
 
@@ -132,7 +136,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
 
-        registry.addMapping(registryMapping)
+        registry.addMapping(applicationBasePath  + registryMapping)
                 .allowedOrigins(origins)
                 .allowedMethods(allowedMethods);
 

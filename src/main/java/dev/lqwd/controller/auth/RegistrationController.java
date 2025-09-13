@@ -20,8 +20,7 @@ public class RegistrationController {
     private final UserService userService;
 
     @GetMapping("/sign-up")
-    public String showRegistrationForm(@CookieValue(value = "sessionId", required = false) String sessionId,
-                                       Model model) {
+    public String showRegistrationForm(Model model) {
 
         model.addAttribute("userCreationRequest", new UserRegistrationRequestDTO());
         return "sign-up";

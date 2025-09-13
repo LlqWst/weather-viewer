@@ -26,8 +26,7 @@ public class AuthController {
     }
 
     @GetMapping({"/sign-in"})
-    public String showSignInForm(@CookieValue(value = "sessionId", required = false) String sessionId,
-                                 Model model) {
+    public String showSignInForm(Model model) {
 
         model.addAttribute("authRequest", new AuthRequestDTO());
         return "sign-in";

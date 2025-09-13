@@ -15,7 +15,6 @@ public class LoginOrEmailValidator implements ConstraintValidator<LoginOrEmail, 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-
         if (value == null || value.isBlank() || value.length() > MAX_EMAIL_LENGTH) {
             return false;
         }

@@ -1,6 +1,7 @@
 package controller_test;
 
 import config.TestPersistenceConfig;
+import dev.lqwd.configuration.AuthConfig;
 import dev.lqwd.configuration.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
@@ -41,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class})
 @ActiveProfiles("test")
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -49,9 +50,10 @@ public class AuthControllerTest {
 
     private static final String INIT_USER_LOGIN = "test_1";
     private static final String CORRECT_PASSWORD = "123456";
-    private static final String URL_SIGN_IN = "/sign-in";
-    private static final String URL_SING_OUT = "/sign-out";
-    private static final String URL_HOME = "/home";
+    private static final String BASE_URL = "/weather-viewer";
+    private static final String URL_SIGN_IN = BASE_URL + "/sign-in";
+    private static final String URL_SING_OUT = BASE_URL + "/sign-out";
+    private static final String URL_HOME = BASE_URL + "/home";
     private static final String COOKIE_NAME = "sessionId";
 
     @Autowired
@@ -111,6 +113,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(get(URL_SIGN_IN)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
@@ -127,6 +130,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(post(URL_SIGN_IN)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", INIT_USER_LOGIN)
                         .param("password", CORRECT_PASSWORD)
                 )
@@ -142,6 +146,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(post(URL_SIGN_IN)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", login)
                         .param("password", CORRECT_PASSWORD))
                 .andDo(print())
@@ -157,6 +162,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(post(URL_SIGN_IN)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", INIT_USER_LOGIN)
                         .param("password", password))
                 .andDo(print())
@@ -174,6 +180,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(post(URL_SING_OUT)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
@@ -187,6 +194,7 @@ public class AuthControllerTest {
 
         mockMvc.perform(post(URL_SING_OUT)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
                 .andExpect(cookie().doesNotExist(COOKIE_NAME))

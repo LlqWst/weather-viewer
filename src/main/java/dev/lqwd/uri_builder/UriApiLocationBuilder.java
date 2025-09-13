@@ -16,7 +16,7 @@ public class UriApiLocationBuilder extends AbstractUriApiBuilderImpl {
         return super.uriBuilder
                 .queryParam("q", location)
                 .queryParam("limit", MAX_LIMIT)
-                .queryParam("appid", super.appId)
+                .queryParam("appid", AbstractUriApiBuilderImpl.APP_ID)
                 .build()
                 .toUriString();
     }

@@ -1,6 +1,7 @@
 package controller_test;
 
 import config.TestPersistenceConfig;
+import dev.lqwd.configuration.AuthConfig;
 import dev.lqwd.configuration.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.entity.Session;
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class})
 @ActiveProfiles("test")
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -47,6 +48,10 @@ public class RegistrationControllerTest {
 
     private static final String INIT_USER_LOGIN = "test_1";
     private static final String CORRECT_PASSWORD = "123456";
+    private static final String BASE_URL = "/weather-viewer";
+    private static final String URL_SIGN_UP = BASE_URL + "/sign-up";
+    private static final String URL_HOME = BASE_URL + "/home";
+    private static final String COOKIE_NAME = "sessionId";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -89,8 +94,9 @@ public class RegistrationControllerTest {
     }
 
     private void performRegistrationAndAssertErrorsForLogin(String login) throws Exception {
-        mockMvc.perform(post("/sign-up")
+        mockMvc.perform(post(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", login)
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", CORRECT_PASSWORD))
@@ -104,22 +110,24 @@ public class RegistrationControllerTest {
     }
 
     private void performRegistrationAndAssertSaveForLogin(String login) throws Exception {
-        mockMvc.perform(post("/sign-up")
+        mockMvc.perform(post(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", login)
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", CORRECT_PASSWORD))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/home"));
+                .andExpect(redirectedUrl(URL_HOME));
 
         Optional<User> savedUser = userRepository.findByLogin(login);
         Assertions.assertTrue(savedUser.isPresent());
     }
 
     private void performRegistrationAndAssertErrorsForPassword(String loginForTest, String password) throws Exception {
-        mockMvc.perform(post("/sign-up")
+        mockMvc.perform(post(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", loginForTest)
                         .param("password", password)
                         .param("passwordConfirm", password))
@@ -138,14 +146,15 @@ public class RegistrationControllerTest {
         User user = userRepository.findByLogin(INIT_USER_LOGIN).orElseThrow();
         String uuid = sessionService.create(user);
 
-        Cookie cookie = new Cookie("sessionId", uuid);
+        Cookie cookie = new Cookie(COOKIE_NAME, uuid);
 
-        mockMvc.perform(get("/sign-up")
+        mockMvc.perform(get(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/home"));
+                .andExpect(redirectedUrl(URL_HOME));
 
         Optional<Session> sessionSaved = sessionRepository.findById(UUID.fromString(uuid));
         Assertions.assertTrue(sessionSaved.isPresent());
@@ -158,8 +167,9 @@ public class RegistrationControllerTest {
 
         Cookie cookie = new Cookie("test", "");
 
-        mockMvc.perform(get("/sign-up")
+        mockMvc.perform(get(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
                 .andExpect(view().name("sign-up"))
@@ -170,10 +180,11 @@ public class RegistrationControllerTest {
     @Test
     public void should_RenderSignUp_When_IncorrectCookies() throws Exception {
 
-        Cookie cookie = new Cookie("sessionId", "sdfdsfsd");
+        Cookie cookie = new Cookie(COOKIE_NAME, "sdfdsfsd");
 
-        mockMvc.perform(get("/sign-up")
+        mockMvc.perform(get(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
                 .andExpect(view().name("sign-up"))
@@ -186,8 +197,9 @@ public class RegistrationControllerTest {
 
         String loginForTest = INIT_USER_LOGIN;
 
-        mockMvc.perform(post("/sign-up")
+        mockMvc.perform(post(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", loginForTest)
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", CORRECT_PASSWORD))
@@ -206,8 +218,9 @@ public class RegistrationControllerTest {
         String loginForTest = "Test_2";
         String incorrectPassword = "incorrectPassword";
 
-        mockMvc.perform(post("/sign-up")
+        mockMvc.perform(post(URL_SIGN_UP)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
+                        .contextPath(BASE_URL)
                         .param("login", loginForTest)
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", incorrectPassword))

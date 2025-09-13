@@ -18,7 +18,7 @@ public class UriApiWeatherBuilder extends AbstractUriApiBuilderImpl {
         return super.uriBuilder
                 .queryParam("lat", location.getLatitude())
                 .queryParam("lon", location.getLongitude())
-                .queryParam("appid", super.appId)
+                .queryParam("appid", AbstractUriApiBuilderImpl.APP_ID)
                 .queryParam("units", UNITS)
                 .build()
                 .toUriString();
