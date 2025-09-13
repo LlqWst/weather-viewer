@@ -27,10 +27,9 @@ public class AuthConfig {
     @PostConstruct
     public void init() {
         this.baseUrl = "/" + applicationBasePath;
-        this.homeUrl = baseUrl + "/home";
+        this.homeUrl = baseUrl + "/";
         this.signInUrl = baseUrl + "/sign-in";
         this.publicUrls = Arrays.asList(
-                baseUrl + "/",
                 signInUrl,
                 baseUrl + "/sign-up"
         );

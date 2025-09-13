@@ -30,7 +30,9 @@ public interface CurrentWeatherMapper {
     }
 
     @AfterMapping
-    default void mapCurrentWeatherFields(ApiCurrentWeatherResponseDTO weatherDTO, @MappingTarget CurrentWeatherResponseDTO responseDTO){
+    default void mapCurrentWeatherFields(ApiCurrentWeatherResponseDTO weatherDTO,
+                                         @MappingTarget CurrentWeatherResponseDTO responseDTO){
+
         if (weatherDTO.getWeather() == null || weatherDTO.getWeather().isEmpty()){
             return;
         }

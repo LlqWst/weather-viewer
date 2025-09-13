@@ -4,6 +4,7 @@ import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +13,12 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class SessionService {
 
     private static final String ERROR_MESSAGE_CREATE_SESSION = "Error during save session for user: ";
 
     private final SessionRepository sessionRepository;
-
-    public SessionService(SessionRepository sessionRepository) {
-        this.sessionRepository = sessionRepository;
-    }
 
     public String create(User user) {
         return Optional.of(sessionRepository.save(Session.builder()

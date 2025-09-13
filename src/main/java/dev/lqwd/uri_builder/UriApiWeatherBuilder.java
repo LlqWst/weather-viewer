@@ -1,6 +1,7 @@
 package dev.lqwd.uri_builder;
 
 import dev.lqwd.entity.Location;
+import dev.lqwd.exception.BadRequestException;
 
 public class UriApiWeatherBuilder extends AbstractUriApiBuilderImpl {
 
@@ -14,13 +15,16 @@ public class UriApiWeatherBuilder extends AbstractUriApiBuilderImpl {
     }
 
     @Override
-    public String build() {
-        return super.uriBuilder
+    public String build() throws BadRequestException {
+        String url = super.uriBuilder
                 .queryParam("lat", location.getLatitude())
                 .queryParam("lon", location.getLongitude())
                 .queryParam("appid", AbstractUriApiBuilderImpl.APP_ID)
                 .queryParam("units", UNITS)
                 .build()
                 .toUriString();
+
+        super.validateUrlLength(url.length());
+        return url;
     }
 }

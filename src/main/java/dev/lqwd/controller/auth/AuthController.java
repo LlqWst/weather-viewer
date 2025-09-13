@@ -20,11 +20,6 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/")
-    public String redirectToSignIn(){
-        return "redirect:/sign-in";
-    }
-
     @GetMapping({"/sign-in"})
     public String showSignInForm(Model model) {
 
@@ -43,7 +38,7 @@ public class AuthController {
         }
         try {
             response.addCookie(authService.createNewSession(authRequest));
-            return "redirect:/home";
+            return "redirect:/";
 
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
@@ -57,7 +52,7 @@ public class AuthController {
                           HttpServletResponse response) {
 
         response.addCookie(authService.closeSession(sessionId));
-        return "redirect:/sign-in";
+        return "redirect:/";
     }
 
 }

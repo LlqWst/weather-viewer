@@ -7,6 +7,7 @@ import dev.lqwd.entity.User;
 import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.repository.LocationRepository;
 import dev.lqwd.repository.SessionRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
@@ -16,18 +17,14 @@ import java.util.List;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class LocationService {
 
     private static final String ERROR_MESSAGE_LOCATION_ADDED = "Location already added for user: {}";
+
     private final LocationRepository locationRepository;
     private final SessionRepository sessionRepository;
 
-    public LocationService(LocationRepository locationRepository,
-                           SessionRepository sessionRepository) {
-
-        this.locationRepository = locationRepository;
-        this.sessionRepository = sessionRepository;
-    }
 
     public void save(AddLocationRequestDTO locationDTO, String uuidFromCookie) {
         User user = getUser(uuidFromCookie);

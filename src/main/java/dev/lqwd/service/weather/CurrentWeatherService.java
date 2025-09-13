@@ -7,24 +7,20 @@ import dev.lqwd.mapper.CurrentWeatherMapper;
 import dev.lqwd.service.repository_service.LocationService;
 import dev.lqwd.service.weahter_api.ApiCurrentWeatherService;
 import dev.lqwd.uri_builder.UriApiWeatherBuilder;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CurrentWeatherService {
 
     private final CurrentWeatherMapper currentWeatherMapper = CurrentWeatherMapper.INSTANCE;
     private final LocationService locationService;
     private final ApiCurrentWeatherService apiCurrentWeatherService;
 
-    public CurrentWeatherService(LocationService locationService,
-                                 ApiCurrentWeatherService apiCurrentWeatherService) {
-
-        this.locationService = locationService;
-        this.apiCurrentWeatherService = apiCurrentWeatherService;
-    }
 
     public List<CurrentWeatherResponseDTO> getWeatherForUser(String sessionId) {
         List<Location> locations = locationService.get(sessionId);

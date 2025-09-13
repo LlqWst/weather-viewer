@@ -8,12 +8,14 @@ import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
 import dev.lqwd.exception.user_validation.EntityAlreadyExistsException;
 import dev.lqwd.repository.UserRepository;
 import dev.lqwd.service.auth.CryptService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class UserService {
 
     private static final String ERROR_MESSAGE_USER_EXISTS = "User already exists";
@@ -21,11 +23,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final CryptService cryptService;
-
-    public UserService(UserRepository userRepository, CryptService cryptService) {
-        this.userRepository = userRepository;
-        this.cryptService = cryptService;
-    }
 
 
     public User readByLogin(AuthRequestDTO authRequest) throws IncorrectCredentialsException {
@@ -39,12 +36,12 @@ public class UserService {
         return user;
     }
 
-    public void save(UserRegistrationRequestDTO creationRequest) {
+    public User save(UserRegistrationRequestDTO creationRequest) {
         Validator.validatePasswordOnEquals(creationRequest);
         String hashedPassword = cryptService.getHashPassword(creationRequest.getPassword());
 
         try {
-            userRepository.save(User.builder()
+           return userRepository.save(User.builder()
                     .login(creationRequest.getLogin())
                     .password(hashedPassword)
                     .build());

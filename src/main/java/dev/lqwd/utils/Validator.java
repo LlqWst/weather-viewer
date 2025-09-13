@@ -13,9 +13,9 @@ import java.util.UUID;
 public final class Validator {
 
     private static final String ERROR_MESSAGE_DIFFERENT_PASSWORDS = "Passwords don't match";
+
     public static void validatePasswordOnEquals(UserRegistrationRequestDTO creationRequest) {
         if (!creationRequest.getPassword().equals(creationRequest.getPasswordConfirm())) {
-
             log.warn(ERROR_MESSAGE_DIFFERENT_PASSWORDS);
             throw new IncorrectCredentialsException(ERROR_MESSAGE_DIFFERENT_PASSWORDS);
         }

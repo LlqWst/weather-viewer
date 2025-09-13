@@ -1,5 +1,7 @@
 package dev.lqwd.uri_builder;
 
+import dev.lqwd.exception.BadRequestException;
+
 public class UriApiLocationBuilder extends AbstractUriApiBuilderImpl {
 
     private static final String URL_LOCATIONS = "https://api.openweathermap.org/geo/1.0/direct";
@@ -12,12 +14,15 @@ public class UriApiLocationBuilder extends AbstractUriApiBuilderImpl {
     }
 
     @Override
-    public String build() {
-        return super.uriBuilder
+    public String build() throws BadRequestException {
+        String url = super.uriBuilder
                 .queryParam("q", location)
                 .queryParam("limit", MAX_LIMIT)
                 .queryParam("appid", AbstractUriApiBuilderImpl.APP_ID)
                 .build()
                 .toUriString();
+
+        super.validateUrlLength(url.length());
+        return url;
     }
 }

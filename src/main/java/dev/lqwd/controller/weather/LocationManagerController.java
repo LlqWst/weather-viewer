@@ -25,7 +25,7 @@ public class LocationManagerController {
         if (!bindingResult.hasErrors()) {
             locationService.save(locationDTO, sessionId);
         }
-        return "redirect:/home";
+        return "redirect:/";
     }
 
     @PostMapping("/delete-location")
@@ -35,7 +35,7 @@ public class LocationManagerController {
         if (id != null && !id.isBlank()) {
             locationService.delete(sessionId, id);
         }
-        return "redirect:/home";
+        return "redirect:/";
     }
 
 }
