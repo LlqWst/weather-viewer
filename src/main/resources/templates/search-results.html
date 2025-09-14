@@ -54,7 +54,9 @@
         <br>
         <br>
         <br>
-        <a th:href="@{/home}">home</a>
+        <a th:href="@{/}">home</a>
+        <br>
+        User: <span th:text="${userName}"></span>
         <br>
         <form th:action="@{/sign-out}" method="post" style="display: inline;">
             <button type="submit" class="btn btn-link p-0">Logout</button>

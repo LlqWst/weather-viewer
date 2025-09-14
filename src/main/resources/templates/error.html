@@ -5,8 +5,10 @@
         <title>error page</title>
     </head>
     <body>
-        <h1>Oops... something went wrong<</h1>
+        <h1>Oops... something went wrong</h1>
 
-        <a th:href="@{/home}">Back to main page</a>
+        User: <span th:text="${userName}"></span>
+        <br>
+        <a th:href="@{/}">Back to main page</a>
     </body>
 </html>

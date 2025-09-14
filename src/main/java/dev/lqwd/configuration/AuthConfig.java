@@ -22,16 +22,18 @@ public class AuthConfig {
     private String baseUrl;
     private String homeUrl;
     private String signInUrl;
-    private List<String> publicUrls;
+    private String signUpUrl;
+    private List<String> authUrls;
 
     @PostConstruct
     public void init() {
         this.baseUrl = "/" + applicationBasePath;
         this.homeUrl = baseUrl + "/";
         this.signInUrl = baseUrl + "/sign-in";
-        this.publicUrls = Arrays.asList(
+        this.signUpUrl = baseUrl + "/sign-up";
+        this.authUrls = Arrays.asList(
                 signInUrl,
-                baseUrl + "/sign-up"
+                signUpUrl
         );
     }
 }

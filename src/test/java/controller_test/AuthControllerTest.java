@@ -53,7 +53,7 @@ public class AuthControllerTest {
     private static final String BASE_URL = "/weather-viewer";
     private static final String URL_SIGN_IN = BASE_URL + "/sign-in";
     private static final String URL_SING_OUT = BASE_URL + "/sign-out";
-    private static final String URL_HOME = BASE_URL + "/home";
+    private static final String URL_HOME = BASE_URL + "/";
     private static final String COOKIE_NAME = "sessionId";
 
     @Autowired

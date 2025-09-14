@@ -22,7 +22,6 @@ public class RegistrationController {
 
     @GetMapping("/sign-up")
     public String showRegistrationForm(Model model) {
-
         model.addAttribute("userCreationRequest", new UserRegistrationRequestDTO());
         return "sign-up";
     }

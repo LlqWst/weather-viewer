@@ -27,7 +27,7 @@ public class AuthService {
     private final UserService userService;
     private final CookieService cookieService;
 
-    public Cookie createNewSession(AuthRequestDTO authRequest){
+    public Cookie openSession(AuthRequestDTO authRequest){
         User user = userService.readByLogin(authRequest);
         String sessionId = sessionService.create(user);
         return cookieService.create(sessionId);

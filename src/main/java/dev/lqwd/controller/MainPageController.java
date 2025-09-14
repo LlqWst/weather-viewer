@@ -30,9 +30,6 @@ public class MainPageController {
             model.addAttribute("locationsWeather", weatherResponseDTO);
             return "main-page";
         }
-
         return "unauthorized-main-page";
     }
-
-
 }

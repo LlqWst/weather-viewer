@@ -23,7 +23,7 @@ public class LocationService {
     private static final String ERROR_MESSAGE_LOCATION_ADDED = "Location already added for user: {}";
 
     private final LocationRepository locationRepository;
-    private final SessionRepository sessionRepository;
+    private final SessionService sessionService;
 
 
     public void save(AddLocationRequestDTO locationDTO, String uuidFromCookie) {
@@ -52,16 +52,15 @@ public class LocationService {
     public void delete(String uuidFromCookie, String id) {
         try {
             long parsedId = Long.parseLong(id);
-            locationRepository.deleteByUserAndId(getUser(uuidFromCookie), parsedId);
+            User user = getUser(uuidFromCookie);
+            locationRepository.deleteByUserAndId(user, parsedId);
         } catch (NumberFormatException e) {
             throw new BadRequestException("Incorrect id for deletion: " + id);
         }
-
     }
 
     private User getUser(String uuidFromCookie) {
-        return Validator.parseUUID(uuidFromCookie)
-                .flatMap(sessionRepository::findUserById)
+        return sessionService.getUserById(uuidFromCookie)
                 .orElseThrow(() -> new BadRequestException("Error during find User by UUID: " + uuidFromCookie));
     }
 }

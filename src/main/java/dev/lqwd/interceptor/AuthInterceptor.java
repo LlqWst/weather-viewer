@@ -1,6 +1,7 @@
 package dev.lqwd.interceptor;
 
 import dev.lqwd.configuration.AuthConfig;
+import dev.lqwd.entity.User;
 import dev.lqwd.service.auth.CookieService;
 import dev.lqwd.service.repository_service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Optional;
 
 
 @Component
@@ -24,27 +27,35 @@ public class AuthInterceptor implements HandlerInterceptor {
                              Object handler) throws Exception {
 
         String requestURI = request.getRequestURI();
-        boolean isAuthPath = authConfig.getPublicUrls().contains(requestURI);
-        boolean isValidSession = hasValidSession(request);
+        Optional<User> currentUser = getCurrentUser(request);
 
+        currentUser.ifPresent(user -> request.setAttribute("userName", user.getLogin()));
 
-
-        if (isAuthPath && isValidSession) {
+        if (!hasAccess(requestURI, currentUser)) {
             response.sendRedirect(authConfig.getHomeUrl());
             return false;
         }
-
-        if (!isAuthPath && !isValidSession) {
-            response.sendRedirect(authConfig.getSignInUrl());
-            return false;
-        }
-
         return true;
     }
 
-    private boolean hasValidSession(HttpServletRequest request) {
+    private boolean hasAccess(String requestURI, Optional<User> currentUser) {
+        boolean isHomeUrl = requestURI.equals(authConfig.getHomeUrl());
+        if (isHomeUrl) {
+            return true;
+        }
+
+        boolean isAuthUrl = authConfig.getAuthUrls().contains(requestURI);
+        if (isAuthUrl) {
+            return currentUser.isEmpty();
+        }
+
+        return currentUser.isPresent();
+    }
+
+    private Optional<User> getCurrentUser(HttpServletRequest request) {
         return cookieService.getSessionId(request.getCookies())
-                .filter(sessionService::isPresent)
-                .isPresent();
+                .flatMap(sessionService::getUserById);
     }
 }
+
+

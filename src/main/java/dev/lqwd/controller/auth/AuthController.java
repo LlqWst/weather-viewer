@@ -37,7 +37,7 @@ public class AuthController {
             return "sign-in";
         }
         try {
-            response.addCookie(authService.createNewSession(authRequest));
+            response.addCookie(authService.openSession(authRequest));
             return "redirect:/";
 
         } catch (UserValidationException e) {

@@ -2,8 +2,10 @@ package dev.lqwd.service.repository_service;
 
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
+import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
+import dev.lqwd.utils.Validator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,15 @@ public class SessionService {
                 .isPresent();
     }
 
+    public Optional<User> getUserById(UUID sessionId) {
+        return Optional.ofNullable(sessionId)
+                .flatMap(sessionRepository::findUserById);
+    }
+
+    public Optional<User> getUserById(String uuidFromCookie) {
+        return Validator.parseUUID(uuidFromCookie)
+                .flatMap(sessionRepository::findUserById);
+    }
 
     public void delete(UUID sessionId) {
         if (isPresent(sessionId)) {
