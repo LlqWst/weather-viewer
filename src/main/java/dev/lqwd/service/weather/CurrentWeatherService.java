@@ -34,7 +34,7 @@ public class CurrentWeatherService {
         return locations.stream()
                 .map(location -> {
                     String url = new UriApiWeatherBuilder(location).build();
-                    ApiCurrentWeatherResponseDTO weatherData = apiCurrentWeatherService.fetchApiData(url).get(0);
+                    ApiCurrentWeatherResponseDTO weatherData = apiCurrentWeatherService.findFirst(url);
                     CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData);
                     responseDto.setId(location.getId());
                     responseDto.setName(location.getName());

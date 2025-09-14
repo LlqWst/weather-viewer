@@ -36,10 +36,10 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             return "sign-in";
         }
+
         try {
             response.addCookie(authService.openSession(authRequest));
             return "redirect:/";
-
         } catch (UserValidationException e) {
             model.addAttribute("error", e.getMessage());
             return "sign-in";

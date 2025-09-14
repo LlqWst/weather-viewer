@@ -35,13 +35,13 @@ public class RegistrationController {
         if (bindingResult.hasErrors()) {
             return "sign-up";
         }
+
         try {
             Cookie sessionId = authService.registration(registrationRequest);
             response.addCookie(sessionId);
             return "redirect:/";
-
-        } catch (UserValidationException e) {
-            model.addAttribute("error", e.getMessage());
+        } catch (UserValidationException e){
+            model.addAttribute ("error", e.getMessage());
             return "sign-up";
         }
     }

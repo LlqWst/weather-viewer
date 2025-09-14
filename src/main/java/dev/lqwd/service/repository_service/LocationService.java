@@ -21,6 +21,8 @@ import java.util.List;
 public class LocationService {
 
     private static final String ERROR_MESSAGE_LOCATION_ADDED = "Location already added for user: {}";
+    private static final String ERROR_MESSAGE_FINDING_USER = "Error during find User by UUID: ";
+    private static final String ERROR_MESSAGE_DELETION_USER = "Incorrect ID for deletion: ";
 
     private final LocationRepository locationRepository;
     private final SessionService sessionService;
@@ -55,12 +57,12 @@ public class LocationService {
             User user = getUser(uuidFromCookie);
             locationRepository.deleteByUserAndId(user, parsedId);
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Incorrect id for deletion: " + id);
+            throw new BadRequestException(ERROR_MESSAGE_DELETION_USER + id);
         }
     }
 
     private User getUser(String uuidFromCookie) {
         return sessionService.getUserById(uuidFromCookie)
-                .orElseThrow(() -> new BadRequestException("Error during find User by UUID: " + uuidFromCookie));
+                .orElseThrow(() -> new BadRequestException(ERROR_MESSAGE_FINDING_USER + uuidFromCookie));
     }
 }

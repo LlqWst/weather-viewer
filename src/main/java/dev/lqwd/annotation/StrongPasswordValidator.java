@@ -20,7 +20,6 @@ public class StrongPasswordValidator implements ConstraintValidator<StrongPasswo
         if (value == null || value.isBlank()) {
             return false;
         }
-
         return value.length() >= min && value.length() <= max;
     }
 }

@@ -14,7 +14,6 @@ public class WeatherLocationService {
 
     private final ApiWeatherLocationService apiWeatherLocationService;
 
-
     public List<ApiLocationResponseDTO> getLocations(String location){
         String url = new UriApiLocationBuilder(location).build();
         return apiWeatherLocationService.fetchApiData(url);
