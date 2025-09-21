@@ -66,6 +66,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         this.authInterceptor = authInterceptor;
     }
 
+
     @Bean
     public Validator validator() {
         return new LocalValidatorFactoryBean();

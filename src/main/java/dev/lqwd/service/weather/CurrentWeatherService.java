@@ -8,6 +8,7 @@ import dev.lqwd.service.repository_service.LocationService;
 import dev.lqwd.service.weahter_api.ApiCurrentWeatherService;
 import dev.lqwd.uri_builder.UriApiWeatherBuilder;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CurrentWeatherService {
 
     private final CurrentWeatherMapper currentWeatherMapper = CurrentWeatherMapper.INSTANCE;
@@ -34,12 +36,20 @@ public class CurrentWeatherService {
         return locations.stream()
                 .map(location -> {
                     String url = new UriApiWeatherBuilder(location).build();
-                    ApiCurrentWeatherResponseDTO weatherData = apiCurrentWeatherService.findFirst(url);
-                    CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData);
+                    List <ApiCurrentWeatherResponseDTO> weatherData = apiCurrentWeatherService.fetchApiData(url);
+                    if (weatherData.isEmpty()){
+                        return getEmptyDTO(weatherData);
+                    }
+                    CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData.get(0));
                     responseDto.setId(location.getId());
                     responseDto.setName(location.getName());
                     return responseDto;
                 })
                 .toList();
+    }
+
+    private CurrentWeatherResponseDTO getEmptyDTO(List<ApiCurrentWeatherResponseDTO> weatherData) {
+        log.warn("Api return empty list for location: {}", weatherData);
+        return new CurrentWeatherResponseDTO();
     }
 }
