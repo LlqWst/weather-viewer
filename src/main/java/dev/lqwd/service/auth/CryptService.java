@@ -1,6 +1,6 @@
 package dev.lqwd.service.auth;
 
-import dev.lqwd.exception.user_validation.IncorrectCredentialsException;
+import dev.lqwd.exception.user_validation.UserAuthException;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,9 @@ public class CryptService {
     }
 
     public void verifyPassword(String password, String hash) {
-        if(!BCrypt.checkpw(password, hash)){
+        if (!BCrypt.checkpw(password, hash)) {
             log.warn(ERROR_MESSAGE_INCORRECT_PASSWORD);
-            throw new IncorrectCredentialsException(ERROR_MESSAGE_INCORRECT_PASSWORD);
+            throw new UserAuthException(ERROR_MESSAGE_INCORRECT_PASSWORD);
         }
     }
 }

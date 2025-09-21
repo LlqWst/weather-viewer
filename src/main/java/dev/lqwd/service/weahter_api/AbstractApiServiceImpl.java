@@ -1,8 +1,7 @@
 package dev.lqwd.service.weahter_api;
 
 import dev.lqwd.dto.weather.api_response.ApiErrorResponse;
-import dev.lqwd.exception.api_weather_exception.ApiException;
-import dev.lqwd.service.weahter_api.infrastructure.ApiExceptionHandler;
+import dev.lqwd.service.weahter_api.infrastructure.ExternalApiExceptionHandler;
 import dev.lqwd.service.weahter_api.infrastructure.ApiHttpClient;
 import dev.lqwd.service.weahter_api.infrastructure.JsonResponseParser;
 import lombok.AllArgsConstructor;
@@ -22,7 +21,7 @@ public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T>
     private final Class<T> type;
     private final JsonResponseParser jsonResponseParser;
     private final ApiHttpClient apiHttpClient;
-    private final ApiExceptionHandler apiExceptionHandler;
+    private final ExternalApiExceptionHandler externalApiExceptionHandler;
 
     @Override
     public List<T> fetchApiData(String uri) {
@@ -40,12 +39,9 @@ public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T>
     }
 
     private void handleError(String body, int statusCode, String uri) {
+        log.warn("Empty body for api error-response. {} - {} - {}", uri, statusCode, body);
         List<ApiErrorResponse> error = jsonResponseParser.deserialize(body, ApiErrorResponse.class);
-        if (error.isEmpty()) {
-            log.warn("Empty body for error-response from API. URI: {}, body: {}", uri, body);
-            throw new ApiException("API error:" + statusCode + " URI: " + uri);
-        }
-        apiExceptionHandler.validate(error.get(0));
+        externalApiExceptionHandler.handle(error);
     }
 
     private Boolean isError(int statusCode) {

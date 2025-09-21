@@ -1,30 +1,31 @@
 package dev.lqwd.uri_builder;
 
+import dev.lqwd.configuration.UriConfig;
 import dev.lqwd.entity.Location;
 import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.utils.Validator;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
-public class UriApiWeatherBuilder extends AbstractUriApiBuilderImpl {
+@Component
+@AllArgsConstructor
+public class UriApiWeatherBuilder {
 
     private static final String URL_WEATHER = "https://api.openweathermap.org/data/2.5/weather";
     private static final String UNITS = "metric";
-    private final Location location;
+    private final UriConfig uriConfig;
 
-    public UriApiWeatherBuilder(Location location) {
-        super(URL_WEATHER);
-        this.location = location;
-    }
-
-    @Override
-    public String build() throws BadRequestException {
-        String url = super.uriBuilder
+    public String build(Location location) throws BadRequestException {
+        String url = UriComponentsBuilder.fromUriString(URL_WEATHER)
                 .queryParam("lat", location.getLatitude())
                 .queryParam("lon", location.getLongitude())
-                .queryParam("appid", AbstractUriApiBuilderImpl.APP_ID)
+                .queryParam("appid", uriConfig.getAppId())
                 .queryParam("units", UNITS)
                 .build()
                 .toUriString();
 
-        super.validateUrlLength(url.length());
+        Validator.validateUrlLength(url.length());
         return url;
     }
 }

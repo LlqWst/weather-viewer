@@ -1,28 +1,29 @@
 package dev.lqwd.uri_builder;
 
+import dev.lqwd.configuration.UriConfig;
 import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.utils.Validator;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
-public class UriApiLocationBuilder extends AbstractUriApiBuilderImpl {
+@Component
+@AllArgsConstructor
+public class UriApiLocationBuilder {
 
     private static final String URL_LOCATIONS = "https://api.openweathermap.org/geo/1.0/direct";
     private static final int MAX_LIMIT = 5;
-    private final String location;
+    private final UriConfig uriConfig;
 
-    public UriApiLocationBuilder(String location) {
-        super(URL_LOCATIONS);
-        this.location = location;
-    }
-
-    @Override
-    public String build() throws BadRequestException {
-        String url = super.uriBuilder
+    public String build(String location) throws BadRequestException {
+        String url = UriComponentsBuilder.fromUriString(URL_LOCATIONS)
                 .queryParam("q", location)
                 .queryParam("limit", MAX_LIMIT)
-                .queryParam("appid", AbstractUriApiBuilderImpl.APP_ID)
+                .queryParam("appid", uriConfig.getAppId())
                 .build()
                 .toUriString();
 
-        super.validateUrlLength(url.length());
+        Validator.validateUrlLength(url.length());
         return url;
     }
 }

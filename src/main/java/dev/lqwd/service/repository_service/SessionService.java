@@ -2,7 +2,6 @@ package dev.lqwd.service.repository_service;
 
 import dev.lqwd.entity.Session;
 import dev.lqwd.entity.User;
-import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.exception.DataBaseException;
 import dev.lqwd.repository.SessionRepository;
 import dev.lqwd.utils.Validator;
@@ -26,13 +25,13 @@ public class SessionService {
         return Optional.of(sessionRepository.save(Session.builder()
                                 .user(user)
                                 .build())
-                                .getId()
-                                .toString())
+                        .getId()
+                        .toString())
                 .orElseThrow(() -> new DataBaseException(ERROR_MESSAGE_CREATE_SESSION + user));
     }
 
     public boolean isPresent(UUID sessionId) {
-        if (sessionId == null){
+        if (sessionId == null) {
             return false;
         }
         return sessionRepository.findById(sessionId)

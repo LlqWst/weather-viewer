@@ -19,7 +19,7 @@ import java.math.BigDecimal;
         uniqueConstraints = @UniqueConstraint(
                 name = "unique_user_location",
                 columnNames = {"user_id", "latitude", "longitude"}
-))
+        ))
 public class Location {
 
     @Id

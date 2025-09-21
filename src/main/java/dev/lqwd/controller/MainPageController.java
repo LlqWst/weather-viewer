@@ -23,9 +23,9 @@ public class MainPageController {
 
     @GetMapping("/")
     public String redirectToSignIn(@CookieValue(value = "sessionId", required = false) String sessionId,
-                                   Model model){
+                                   Model model) {
 
-        if(authService.hasValidSession(sessionId)){
+        if (authService.hasValidSession(sessionId)) {
             List<CurrentWeatherResponseDTO> weatherResponseDTO = currentWeatherService.getWeatherForUser(sessionId);
             model.addAttribute("locationsWeather", weatherResponseDTO);
             return "main-page";

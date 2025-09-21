@@ -9,6 +9,7 @@ public class FallBackController {
 
     @RequestMapping("/**")
     public String handleIncorrectUrls() {
+
         return "error";
     }
 }

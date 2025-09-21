@@ -19,9 +19,10 @@ import java.util.List;
 @Slf4j
 public class CurrentWeatherService {
 
-    private final CurrentWeatherMapper currentWeatherMapper = CurrentWeatherMapper.INSTANCE;
+    private final CurrentWeatherMapper currentWeatherMapper;
     private final LocationService locationService;
     private final ApiCurrentWeatherService apiCurrentWeatherService;
+    private final UriApiWeatherBuilder uriApiWeatherBuilder;
 
 
     public List<CurrentWeatherResponseDTO> getWeatherForUser(String sessionId) {
@@ -35,10 +36,10 @@ public class CurrentWeatherService {
     private List<CurrentWeatherResponseDTO> getCurrentWeather(List<Location> locations) {
         return locations.stream()
                 .map(location -> {
-                    String url = new UriApiWeatherBuilder(location).build();
-                    List <ApiCurrentWeatherResponseDTO> weatherData = apiCurrentWeatherService.fetchApiData(url);
-                    if (weatherData.isEmpty()){
-                        return getEmptyDTO(weatherData);
+                    String url = uriApiWeatherBuilder.build(location);
+                    List<ApiCurrentWeatherResponseDTO> weatherData = apiCurrentWeatherService.fetchApiData(url);
+                    if (weatherData.isEmpty()) {
+                        return getEmptyWeatherDTO(weatherData);
                     }
                     CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData.get(0));
                     responseDto.setId(location.getId());
@@ -48,7 +49,7 @@ public class CurrentWeatherService {
                 .toList();
     }
 
-    private CurrentWeatherResponseDTO getEmptyDTO(List<ApiCurrentWeatherResponseDTO> weatherData) {
+    private CurrentWeatherResponseDTO getEmptyWeatherDTO(List<ApiCurrentWeatherResponseDTO> weatherData) {
         log.warn("Api return empty list for location: {}", weatherData);
         return new CurrentWeatherResponseDTO();
     }

@@ -21,7 +21,7 @@ public class JsonResponseParser {
         this.objectMapper = new ObjectMapper();
     }
 
-    public <T> List<T> deserialize(String json, Class<T> type){
+    public <T> List<T> deserialize(String json, Class<T> type) {
         if (json == null || json.trim().isEmpty()) {
             return Collections.emptyList();
         }
@@ -34,7 +34,7 @@ public class JsonResponseParser {
             }
             throw new JsonParseException("Unsupported JSON format");
 
-        } catch (JsonProcessingException e){
+        } catch (JsonProcessingException e) {
             log.warn("Failed to parse json: {}", json, e);
             throw new SerializationException("Failed to parse json", e);
         }

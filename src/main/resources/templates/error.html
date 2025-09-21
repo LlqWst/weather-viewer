@@ -6,6 +6,11 @@
     </head>
     <body>
         <h1>Oops... something went wrong</h1>
+        <br>
+
+        <span th:if="${errorMessage}" th:text="${errorMessage}" style="color: red; font-size: 18px"></span>
+        <br>
+        <br>
 
         User: <span th:text="${userName}"></span>
         <br>

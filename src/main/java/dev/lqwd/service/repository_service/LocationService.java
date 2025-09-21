@@ -1,12 +1,10 @@
 package dev.lqwd.service.repository_service;
 
-import dev.lqwd.utils.Validator;
 import dev.lqwd.dto.weather.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.repository.LocationRepository;
-import dev.lqwd.repository.SessionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -37,8 +35,8 @@ public class LocationService {
                     .latitude(locationDTO.getLat())
                     .longitude(locationDTO.getLon())
                     .build());
-        }  catch (ConstraintViolationException e) {
-            if(e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
+        } catch (ConstraintViolationException e) {
+            if (e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
                 log.warn(ERROR_MESSAGE_LOCATION_ADDED, user);
                 return;
             }

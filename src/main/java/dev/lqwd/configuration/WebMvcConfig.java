@@ -25,7 +25,9 @@ import java.util.List;
         "dev.lqwd.controller",
         "dev.lqwd.interceptor",
         "dev.lqwd.exception_handler",
-        "dev.lqwd.configuration"
+        "dev.lqwd.configuration",
+        "dev.lqwd.uri_builder",
+        "dev.lqwd.mapper"
 })
 @PropertySource("classpath:app.properties")
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -36,7 +38,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private String[] allowedMethods;
 
     @Value("${webMvc.corsRegistry.applicationBasePath}")
-    private String applicationBasePath ;
+    private String applicationBasePath;
 
     @Value("${webMvc.corsRegistry.registryMapping}")
     private String registryMapping;
@@ -137,7 +139,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
 
-        registry.addMapping(applicationBasePath  + registryMapping)
+        registry.addMapping(applicationBasePath + registryMapping)
                 .allowedOrigins(origins)
                 .allowedMethods(allowedMethods);
 

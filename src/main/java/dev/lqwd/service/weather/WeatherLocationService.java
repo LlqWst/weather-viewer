@@ -13,9 +13,10 @@ import java.util.List;
 public class WeatherLocationService {
 
     private final ApiWeatherLocationService apiWeatherLocationService;
+    private final UriApiLocationBuilder uriApiLocationBuilder;
 
-    public List<ApiLocationResponseDTO> getLocations(String location){
-        String url = new UriApiLocationBuilder(location).build();
+    public List<ApiLocationResponseDTO> getLocations(String location) {
+        String url = uriApiLocationBuilder.build(location);
         return apiWeatherLocationService.fetchApiData(url);
     }
 }

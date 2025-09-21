@@ -27,7 +27,7 @@ public class AuthService {
     private final UserService userService;
     private final CookieService cookieService;
 
-    public Cookie openSession(AuthRequestDTO authRequest){
+    public Cookie openSession(AuthRequestDTO authRequest) {
         User user = userService.readByLogin(authRequest);
         String sessionId = sessionService.create(user);
         return cookieService.create(sessionId);
@@ -42,10 +42,10 @@ public class AuthService {
         return deletedCount;
     }
 
-    public Cookie closeSession(String sessionId){
+    public Cookie closeSession(String sessionId) {
         Validator.parseUUID(sessionId).ifPresentOrElse(
-                        sessionService::delete,
-                        ()-> log.warn("Attempt to logout with invalid session cookie: {}", sessionId));
+                sessionService::delete,
+                () -> log.warn("Attempt to logout with invalid session cookie: {}", sessionId));
 
         return cookieService.delete();
     }
@@ -59,7 +59,7 @@ public class AuthService {
                 });
     }
 
-    public Cookie registration(UserRegistrationRequestDTO registrationRequest){
+    public Cookie registration(UserRegistrationRequestDTO registrationRequest) {
         User user = userService.save(registrationRequest);
         String sessionId = sessionService.create(user);
         return cookieService.create(sessionId);

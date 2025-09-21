@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface SessionRepository extends AbstractRepository<Session, UUID> {
     int deleteByExpiresAtBefore(LocalDateTime now);
-    public Optional<User> findUserById(UUID sessionId);
+
+    Optional<User> findUserById(UUID sessionId);
 }

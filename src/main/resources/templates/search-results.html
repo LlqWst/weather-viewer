@@ -8,17 +8,22 @@
     <body>
         <h1>Search result</h1>
 
-        <form th:action="@{/search}" method="get" class="search-form">
+        <form th:action="@{/search}" th:object="${location}" method="get" class="search-form">
             <div class="input-group">
                 <input type="text"
-                       name="location"
-                       th:value="${param.location}"
+                       th:field="*{location}"
                        class="form-control"
                        placeholder="Поиск..."
                        aria-label="Поиск">
+
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Найти
                 </button>
+                <br>
+                <span th:if="${#fields.hasErrors('location')}"
+                      th:errors="*{location}"
+                      style="color: red; font-size: 10px">
+                </span>
             </div>
         </form>
         <br>

@@ -29,7 +29,7 @@ public class LocationRepositoryImpl extends AbstractRepositoryImpl<Location, Lon
     @Transactional(readOnly = true)
     public Optional<Location> findByUserAndId(User user, Long id) {
         return Optional.ofNullable(entityManager.createQuery(
-                "SELECT l FROM Location AS l WHERE l.user = :user AND l.id = :id", Location.class)
+                        "SELECT l FROM Location AS l WHERE l.user = :user AND l.id = :id", Location.class)
                 .setParameter("user", user)
                 .setParameter("id", id)
                 .getSingleResultOrNull());
