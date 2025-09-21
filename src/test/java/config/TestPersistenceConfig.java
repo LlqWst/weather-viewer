@@ -22,7 +22,13 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan({
         "dev.lqwd.service",
-        "dev.lqwd.repository"
+        "dev.lqwd.repository",
+        "dev.lqwd.uri_builder",
+        "dev.lqwd.controller",
+        "dev.lqwd.interceptor",
+        "dev.lqwd.exception_handler",
+        "dev.lqwd.configuration",
+        "dev.lqwd.mapper"
 })
 @PropertySource("classpath:app_test.properties")
 public class TestPersistenceConfig {

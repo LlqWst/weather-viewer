@@ -16,13 +16,13 @@ public interface CurrentWeatherMapper {
     String EXTENSION = ".png";
 
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "main.temp", target = "temp", qualifiedByName = "roundToScale2")
+    @Mapping(source = "main.temp", target = "temp", qualifiedByName = "roundToScale1")
     @Mapping(source = "sys.country", target = "country")
-    @Mapping(source = "main.feelsLike", target = "feelsLike", qualifiedByName = "roundToScale2")
+    @Mapping(source = "main.feelsLike", target = "feelsLike", qualifiedByName = "roundToScale1")
     @Mapping(source = "main.humidity", target = "humidity")
     CurrentWeatherResponseDTO toResponseDto(ApiCurrentWeatherResponseDTO weatherOfLocationDTO);
 
-    @Named("roundToScale2")
+    @Named("roundToScale1")
     default BigDecimal round(BigDecimal value) {
         if (value == null) {
             return null;

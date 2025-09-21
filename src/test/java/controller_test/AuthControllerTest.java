@@ -2,6 +2,7 @@ package controller_test;
 
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.AuthConfig;
+import dev.lqwd.configuration.UriConfig;
 import dev.lqwd.configuration.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
@@ -42,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class, UriConfig.class})
 @ActiveProfiles("test")
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -172,34 +173,35 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void should_DeleteCookie_When_SignOut() throws Exception {
+    public void should_SignOutWithCorrectCookie() throws Exception {
 
         User user = userRepository.findByLogin(INIT_USER_LOGIN).orElseThrow();
         String uuid = sessionService.create(user);
-        Cookie cookie = new Cookie("sessionId", uuid);
+        Cookie cookie = new Cookie(COOKIE_NAME, uuid);
 
         mockMvc.perform(post(URL_SING_OUT)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
                         .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
+                .andExpect(cookie().value(COOKIE_NAME, ""))
+                .andExpect(cookie().maxAge(COOKIE_NAME, 0))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(URL_SIGN_IN));
+                .andExpect(redirectedUrl(URL_HOME));
     }
 
     @Test
-    public void should_DeleteIncorrectCookie_When_SignOut1() throws Exception {
+    public void should_InterceptorRedirectHome_When_TryToSignOutWithIncorrectCookie() throws Exception {
 
-        Cookie cookie = new Cookie("sessionId", "123");
+        Cookie cookie = new Cookie(COOKIE_NAME, "INCORRECT COOKIE");
 
         mockMvc.perform(post(URL_SING_OUT)
                         .contentType(MediaType.valueOf("application/x-www-form-urlencoded"))
                         .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
-                .andExpect(cookie().doesNotExist(COOKIE_NAME))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/weather-viewer/sign-in"));
+                .andExpect(redirectedUrl(URL_HOME));
     }
 
 }

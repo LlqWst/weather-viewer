@@ -3,6 +3,7 @@ package dev.lqwd.exception_handler;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.exception.UnauthorizedException;
 import dev.lqwd.exception.api_weather_exception.ApiServiceUnavailableException;
 import dev.lqwd.exception.api_weather_exception.SubscriptionApiException;
 import dev.lqwd.exception.api_weather_exception.UnexpectedExternalApiException;
@@ -14,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
                                                    HttpServletRequest request) {
 
 
-        log.error("Exception occurred:  {}", e.getMessage(), e);
+        log.warn("Exception occurred:  {}", e.getMessage(), e);
         redirectAttributes.addFlashAttribute("error", e.getMessage());
 
         AuthRequestDTO requestDTO = new AuthRequestDTO();
@@ -53,23 +53,23 @@ public class GlobalExceptionHandler {
         return "redirect:/sign-in";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleUniversalException(Exception e,
-                                           HttpServletResponse response) {
-
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        log.error("Exception occurred:  {}", e.getMessage(), e);
-        return "error";
-    }
-
     @ExceptionHandler(BadRequestException.class)
     public String handleBadRequestException(Exception e,
                                             Model model,
                                             HttpServletResponse response) {
 
+        log.warn("Exception occurred:  {}", e.getMessage(), e);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         model.addAttribute("errorMessage", e.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public String handleUnauthorizedException(Exception e,
+                                              HttpServletResponse response) {
+
         log.error("Exception occurred:  {}", e.getMessage(), e);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return "error";
     }
 
@@ -78,20 +78,9 @@ public class GlobalExceptionHandler {
                                                  Model model,
                                                  HttpServletResponse response) {
 
+        log.error("Exception occurred:  {}", e.getMessage(), e);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         model.addAttribute("errorMessage", e.getMessage());
-        log.error("Exception occurred:  {}", e.getMessage(), e);
-        return "error";
-    }
-
-    @ExceptionHandler(ApiServiceUnavailableException.class)
-    public String handleApiServiceUnavailableException(Exception e,
-                                                       Model model,
-                                                       HttpServletResponse response) {
-
-        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-        model.addAttribute("errorMessage", e.getMessage());
-        log.error("Exception occurred:  {}", e.getMessage(), e);
         return "error";
     }
 
@@ -100,9 +89,29 @@ public class GlobalExceptionHandler {
                                                        Model model,
                                                        HttpServletResponse response) {
 
+        log.error("Exception occurred:  {}", e.getMessage(), e);
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         model.addAttribute("errorMessage", e.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(ApiServiceUnavailableException.class)
+    public String handleApiServiceUnavailableException(Exception e,
+                                                       Model model,
+                                                       HttpServletResponse response) {
+
         log.error("Exception occurred:  {}", e.getMessage(), e);
+        response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+        model.addAttribute("errorMessage", e.getMessage());
+        return "error";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleUniversalException(Exception e,
+                                           HttpServletResponse response) {
+
+        log.error("Exception occurred:  {}", e.getMessage(), e);
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return "error";
     }
 

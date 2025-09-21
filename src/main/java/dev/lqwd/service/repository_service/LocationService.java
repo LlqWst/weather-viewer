@@ -4,6 +4,7 @@ import dev.lqwd.dto.weather.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
 import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.exception.UnauthorizedException;
 import dev.lqwd.repository.LocationRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,12 +56,12 @@ public class LocationService {
             User user = getUser(uuidFromCookie);
             locationRepository.deleteByUserAndId(user, parsedId);
         } catch (NumberFormatException e) {
-            throw new BadRequestException(ERROR_MESSAGE_DELETION_USER + id);
+            throw new UnauthorizedException(ERROR_MESSAGE_DELETION_USER + id);
         }
     }
 
     private User getUser(String uuidFromCookie) {
         return sessionService.getUserById(uuidFromCookie)
-                .orElseThrow(() -> new BadRequestException(ERROR_MESSAGE_FINDING_USER + uuidFromCookie));
+                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_FINDING_USER + uuidFromCookie));
     }
 }

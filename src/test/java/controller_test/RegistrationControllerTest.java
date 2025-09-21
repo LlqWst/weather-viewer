@@ -2,6 +2,7 @@ package controller_test;
 
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.AuthConfig;
+import dev.lqwd.configuration.UriConfig;
 import dev.lqwd.configuration.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.entity.Session;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class, UriConfig.class})
 @ActiveProfiles("test")
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -204,8 +205,8 @@ public class RegistrationControllerTest {
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", CORRECT_PASSWORD))
                 .andDo(print())
-                .andExpect(model().attribute("error", "User already exists"))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+                .andExpect(flash().attribute("error", "User already exists"))
+                .andExpect(redirectedUrl(URL_SIGN_UP));
 
         Optional<User> savedUser = userRepository.findByLogin(loginForTest);
         Assertions.assertTrue(savedUser.isPresent());
@@ -225,8 +226,8 @@ public class RegistrationControllerTest {
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", incorrectPassword))
                 .andDo(print())
-                .andExpect(model().attribute("error", "Passwords don't match"))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
+                .andExpect(flash().attribute("error", "Passwords don't match"))
+                .andExpect(redirectedUrl(URL_SIGN_UP));
 
         Optional<User> savedUser = userRepository.findByLogin(loginForTest);
         Assertions.assertTrue(savedUser.isEmpty());
