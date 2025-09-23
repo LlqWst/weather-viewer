@@ -1,6 +1,6 @@
-package dev.lqwd.uri_builder;
+package dev.lqwd.uri_api_builder;
 
-import dev.lqwd.configuration.UriConfig;
+import dev.lqwd.configuration.HttpClientConfig;
 import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.utils.Validator;
 import lombok.AllArgsConstructor;
@@ -13,13 +13,13 @@ public class UriApiLocationBuilder {
 
     private static final String URL_LOCATIONS = "https://api.openweathermap.org/geo/1.0/direct";
     private static final int MAX_LIMIT = 5;
-    private final UriConfig uriConfig;
+    private final HttpClientConfig httpClientConfig;
 
     public String build(String location) throws BadRequestException {
         String url = UriComponentsBuilder.fromUriString(URL_LOCATIONS)
                 .queryParam("q", location)
                 .queryParam("limit", MAX_LIMIT)
-                .queryParam("appid", uriConfig.getAppId())
+                .queryParam("appid", httpClientConfig.getAppId())
                 .build()
                 .toUriString();
 

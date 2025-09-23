@@ -26,7 +26,7 @@ import java.util.List;
         "dev.lqwd.interceptor",
         "dev.lqwd.exception_handler",
         "dev.lqwd.configuration",
-        "dev.lqwd.uri_builder",
+        "dev.lqwd.uri_api_builder",
         "dev.lqwd.mapper"
 })
 @PropertySource("classpath:app.properties")

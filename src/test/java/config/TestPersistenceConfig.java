@@ -23,7 +23,7 @@ import java.util.Properties;
 @ComponentScan({
         "dev.lqwd.service",
         "dev.lqwd.repository",
-        "dev.lqwd.uri_builder",
+        "dev.lqwd.uri_api_builder",
         "dev.lqwd.controller",
         "dev.lqwd.interceptor",
         "dev.lqwd.exception_handler",
@@ -32,6 +32,7 @@ import java.util.Properties;
 })
 @PropertySource("classpath:app_test.properties")
 public class TestPersistenceConfig {
+
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

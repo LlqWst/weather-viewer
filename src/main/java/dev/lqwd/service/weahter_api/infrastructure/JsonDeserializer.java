@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.lqwd.exception.SerializationException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,12 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class JsonResponseParser {
+@AllArgsConstructor
+public class JsonDeserializer {
 
+    public static final String UNSUPPORTED_JSON_FORMAT = "Unsupported JSON format";
+    public static final String SERIALIZATION_FAILED = "Failed to parse json";
     private final ObjectMapper objectMapper;
-
-    public JsonResponseParser() {
-        this.objectMapper = new ObjectMapper();
-    }
 
     public <T> List<T> deserialize(String json, Class<T> type) {
         if (json == null || json.trim().isEmpty()) {
@@ -32,11 +32,11 @@ public class JsonResponseParser {
             } else if (rootNode.isObject()) {
                 return deserializeObject(json, type);
             }
-            throw new JsonParseException("Unsupported JSON format");
+            throw new JsonParseException(UNSUPPORTED_JSON_FORMAT);
 
         } catch (JsonProcessingException e) {
             log.warn("Failed to parse json: {}", json, e);
-            throw new SerializationException("Failed to parse json", e);
+            throw new SerializationException(SERIALIZATION_FAILED, e);
         }
     }
 

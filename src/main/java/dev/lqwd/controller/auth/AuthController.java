@@ -32,7 +32,6 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             return "sign-in";
         }
-
         response.addCookie(authService.openSession(authRequest));
         return "redirect:/";
     }

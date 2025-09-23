@@ -1,8 +1,8 @@
 package controller_test;
 
 import config.TestPersistenceConfig;
-import dev.lqwd.configuration.AuthConfig;
-import dev.lqwd.configuration.UriConfig;
+import dev.lqwd.configuration.ApplicationUrlConfig;
+import dev.lqwd.configuration.HttpClientConfig;
 import dev.lqwd.configuration.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.entity.Session;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith({SpringExtension.class, MockitoExtension.class})
-@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, AuthConfig.class, UriConfig.class})
+@ContextConfiguration(classes = {TestPersistenceConfig.class, WebMvcConfig.class, ApplicationUrlConfig.class, HttpClientConfig.class})
 @ActiveProfiles("test")
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)

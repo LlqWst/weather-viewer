@@ -51,6 +51,10 @@ public class AuthService {
     }
 
     public boolean hasValidSession(String sessionId) {
+        if (sessionId == null) {
+            return false;
+        }
+
         return Validator.parseUUID(sessionId)
                 .map(sessionService::isPresent)
                 .orElseGet(() -> {

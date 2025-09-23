@@ -1,6 +1,6 @@
 package dev.lqwd.interceptor;
 
-import dev.lqwd.configuration.AuthConfig;
+import dev.lqwd.configuration.ApplicationUrlConfig;
 import dev.lqwd.entity.User;
 import dev.lqwd.service.auth.CookieService;
 import dev.lqwd.service.repository_service.SessionService;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final AuthConfig authConfig;
+    private final ApplicationUrlConfig applicationUrlConfig;
     private final SessionService sessionService;
     private final CookieService cookieService;
 
@@ -32,23 +32,22 @@ public class AuthInterceptor implements HandlerInterceptor {
         currentUser.ifPresent(user -> request.setAttribute("userName", user.getLogin()));
 
         if (!hasAccess(requestURI, currentUser)) {
-            response.sendRedirect(authConfig.getHomeUrl());
+            response.sendRedirect(applicationUrlConfig.getHomeUrl());
             return false;
         }
         return true;
     }
 
     private boolean hasAccess(String requestURI, Optional<User> currentUser) {
-        boolean isHomeUrl = requestURI.equals(authConfig.getHomeUrl());
+        boolean isHomeUrl = requestURI.equals(applicationUrlConfig.getHomeUrl());
         if (isHomeUrl) {
             return true;
         }
 
-        boolean isAuthUrl = authConfig.getAuthUrls().contains(requestURI);
+        boolean isAuthUrl = applicationUrlConfig.getAuthUrls().contains(requestURI);
         if (isAuthUrl) {
             return currentUser.isEmpty();
         }
-
         return currentUser.isPresent();
     }
 

@@ -3,7 +3,7 @@ package dev.lqwd.service.weahter_api;
 import dev.lqwd.dto.weather.api_response.ApiErrorResponse;
 import dev.lqwd.service.weahter_api.infrastructure.ExternalApiExceptionHandler;
 import dev.lqwd.service.weahter_api.infrastructure.ApiHttpClient;
-import dev.lqwd.service.weahter_api.infrastructure.JsonResponseParser;
+import dev.lqwd.service.weahter_api.infrastructure.JsonDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +19,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T> {
 
     private final Class<T> type;
-    private final JsonResponseParser jsonResponseParser;
+    private final JsonDeserializer jsonDeserializer;
     private final ApiHttpClient apiHttpClient;
     private final ExternalApiExceptionHandler externalApiExceptionHandler;
 
@@ -35,12 +35,12 @@ public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T>
         if (isError(statusCode)) {
             handleError(body, statusCode, uri);
         }
-        return jsonResponseParser.deserialize(body, type);
+        return jsonDeserializer.deserialize(body, type);
     }
 
     private void handleError(String body, int statusCode, String uri) {
-        log.warn("Empty body for api error-response. {} - {} - {}", uri, statusCode, body);
-        List<ApiErrorResponse> error = jsonResponseParser.deserialize(body, ApiErrorResponse.class);
+        log.warn("API responded with an error with an empty body. {} - {} - {}", uri, statusCode, body);
+        List<ApiErrorResponse> error = jsonDeserializer.deserialize(body, ApiErrorResponse.class);
         externalApiExceptionHandler.handle(error);
     }
 

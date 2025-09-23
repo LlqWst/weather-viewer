@@ -14,7 +14,7 @@ import java.util.List;
 @PropertySource("classpath:app.properties")
 @Setter
 @Getter
-public class AuthConfig {
+public class ApplicationUrlConfig {
 
     @Value("${webMvc.corsRegistry.applicationBasePath}")
     private String applicationBasePath;
