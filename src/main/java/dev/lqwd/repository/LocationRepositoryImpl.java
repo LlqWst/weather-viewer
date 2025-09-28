@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public class LocationRepositoryImpl extends AbstractRepositoryImpl<Location, Long> implements LocationRepository {
 
+    public static final String INCORRECT_LOCATION_ID_MESSAGE = "Location with id %d not found for user %s";
+
     public LocationRepositoryImpl() {
         super(Location.class);
     }
@@ -39,7 +41,7 @@ public class LocationRepositoryImpl extends AbstractRepositoryImpl<Location, Lon
     @Transactional
     public void deleteByUserAndId(User user, Long id) {
         Location location = findByUserAndId(user, id)
-                .orElseThrow(() -> new BadRequestException("Location with id %d not found for user %s".formatted(id, user)));
+                .orElseThrow(() -> new BadRequestException(INCORRECT_LOCATION_ID_MESSAGE.formatted(id, user)));
 
         entityManager.remove(location);
     }

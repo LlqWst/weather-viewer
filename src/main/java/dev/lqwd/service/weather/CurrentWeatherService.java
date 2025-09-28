@@ -7,6 +7,7 @@ import dev.lqwd.mapper.CurrentWeatherMapper;
 import dev.lqwd.service.repository_service.LocationService;
 import dev.lqwd.service.weahter_api.ApiCurrentWeatherService;
 import dev.lqwd.service.weahter_api.infrastructure.uri_api_builder.UriApiWeatherBuilder;
+import dev.lqwd.utils.Parser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,11 @@ public class CurrentWeatherService {
 
 
     public List<CurrentWeatherResponseDTO> getWeatherForUser(String sessionId) {
-        List<Location> locations = locationService.get(sessionId);
-        if (locations.isEmpty()) {
-            return Collections.emptyList();
-        }
-        return getCurrentWeather(locations);
+        return Parser.parseUUID(sessionId)
+                .map(locationService::get)
+                .map(this::getCurrentWeather)
+                .orElseGet(Collections::emptyList);
+
     }
 
     private List<CurrentWeatherResponseDTO> getCurrentWeather(List<Location> locations) {

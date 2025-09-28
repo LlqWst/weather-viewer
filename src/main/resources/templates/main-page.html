@@ -8,59 +8,71 @@
     <body>
         <h1>Home</h1>
 
-        <form th:action="@{/search}" method="get" class="search-form">
-            <div class="input-group">
-                <input type="text"
-                       name="location"
-                       th:object="${location}"
-                       class="form-control"
-                       placeholder="Поиск..."
-                       aria-label="Поиск">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-search"></i> Найти
-                </button>
-            </div>
-        </form>
+        <div th:unless="${userName}">
+            <br>
+            User: <span th:text="${userName}"></span>
+            <br>
+            <a th:href="@{/sign-in}">Sign-In</a>
+            <br>
+            <a th:href="@{/sign-up}">Sign-Up</a>
+        </div>
 
-            <div class="row">
-                <div th:each="weather : ${locationsWeather}" class="col-md-4 mb-3">
-                    <div class="card">
-                        <img th:src="${weather.iconUrl}"
-                             alt="icon"
-                             loading="lazy">
-                        <div class="card-body">
-                            <h2 class="card-title">
-                                <span th:text="${weather.temp}"></span>°C
-                            </h2>
-                            <div class="card-text">
-                                <h3>
-                                    <span th:text="${weather.name}"></span>,
-                                    <span th:text="${weather.country}"></span>
-                                </h3>
-                                <p> Feels like
-                                    <span th:text="${weather.feelsLike}"></span>°C.
-                                    <span th:text="${weather.description}"></span>
-                                </p>
-                                <p>
-                                    Humidity:
-                                    <span th:text="${weather.humidity}"></span>%
-                                </p>
+
+        <div th:if="${userName}">
+            <form th:action="@{/search}" method="get" class="search-form">
+                <div class="input-group">
+                    <input type="text"
+                           name="location"
+                           th:object="${location}"
+                           class="form-control"
+                           placeholder="Поиск..."
+                           aria-label="Поиск">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Найти
+                    </button>
+                </div>
+            </form>
+
+                <div class="row">
+                    <div th:each="weather : ${locationsWeather}" class="col-md-4 mb-3">
+                        <div class="card">
+                            <img th:src="${weather.iconUrl}"
+                                 alt="icon"
+                                 loading="lazy">
+                            <div class="card-body">
+                                <h2 class="card-title">
+                                    <span th:text="${weather.temp}"></span>°C
+                                </h2>
+                                <div class="card-text">
+                                    <h3>
+                                        <span th:text="${weather.name}"></span>,
+                                        <span th:text="${weather.country}"></span>
+                                    </h3>
+                                    <p> Feels like
+                                        <span th:text="${weather.feelsLike}"></span>°C.
+                                        <span th:text="${weather.description}"></span>
+                                    </p>
+                                    <p>
+                                        Humidity:
+                                        <span th:text="${weather.humidity}"></span>%
+                                    </p>
+                                </div>
+                                <form th:action="@{/delete-location}" method="post" style="display: inline;">
+                                    <button type="submit" class="btn btn-link p-0">delete</button>
+                                    <input type="hidden" name="id" th:value="${weather.id}">
+                                </form>
                             </div>
-                            <form th:action="@{/delete-location}" method="post" style="display: inline;">
-                                <button type="submit" class="btn btn-link p-0">delete</button>
-                                <input type="hidden" name="id" th:value="${weather.id}">
-                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
 
-        <br>
-        <br>
-        User: <span th:text="${userName}"></span>
-        <br>
-        <form th:action="@{/sign-out}" method="post" style="display: inline;">
-            <button type="submit" class="btn btn-link p-0">Logout</button>
-        </form>
+            <br>
+            <br>
+            User: <span th:text="${userName}"></span>
+            <br>
+            <form th:action="@{/sign-out}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-link p-0">Logout</button>
+            </form>
+        </div>
     </body>
 </html>

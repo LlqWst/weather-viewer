@@ -6,9 +6,6 @@ import dev.lqwd.exception.user_validation.UserRegistrationException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
-import java.util.UUID;
-
 @UtilityClass
 @Slf4j
 public final class Validator {
@@ -24,15 +21,7 @@ public final class Validator {
         }
     }
 
-    public static Optional<UUID> parseUUID(String id) {
-        try {
-            return Optional.ofNullable(id).map(UUID::fromString);
-        } catch (IllegalArgumentException e) {
-            return Optional.empty();
-        }
-    }
-
-    public void validateUrlLength(int urlLength) {
+    public static void validateUrlLength(int urlLength) {
         if (MAX_LENGTH_URL < urlLength) {
             throw new BadRequestException(ERROR_MESSAGE_TOO_LONG_URL
                     .formatted(MAX_LENGTH_URL, urlLength));

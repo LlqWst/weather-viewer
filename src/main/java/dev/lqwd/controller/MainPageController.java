@@ -18,16 +18,12 @@ import java.util.List;
 @AllArgsConstructor
 public class MainPageController {
 
-    private final AuthService authService;
     private final CurrentWeatherService currentWeatherService;
 
     @GetMapping("/")
     public String redirectToSignIn(@CookieValue(value = "sessionId", required = false) String sessionId,
                                    Model model) {
 
-        if (!authService.hasValidSession(sessionId)) {
-            return "unauthorized-main-page";
-        }
 
         List<CurrentWeatherResponseDTO> weatherResponseDTO = currentWeatherService.getWeatherForUser(sessionId);
         model.addAttribute("locationsWeather", weatherResponseDTO);

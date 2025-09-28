@@ -3,15 +3,16 @@ package dev.lqwd.service.repository_service;
 import dev.lqwd.dto.weather.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
-import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.exception.UnauthorizedException;
 import dev.lqwd.repository.LocationRepository;
+import dev.lqwd.utils.Parser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -28,7 +29,7 @@ public class LocationService {
 
 
     public void save(AddLocationRequestDTO locationDTO, String uuidFromCookie) {
-        User user = getUser(uuidFromCookie);
+        User user = getUserByCookie(uuidFromCookie);
         try {
             locationRepository.save(Location.builder()
                     .user(user)
@@ -45,23 +46,27 @@ public class LocationService {
         }
     }
 
-    public List<Location> get(String uuidFromCookie) {
-        User user = getUser(uuidFromCookie);
+    public List<Location> get(UUID sessionId) {
+        User user = getUserById(sessionId);
         return locationRepository.findAllByUserId(user);
     }
 
-    public void delete(String uuidFromCookie, String id) {
-        try {
-            long parsedId = Long.parseLong(id);
-            User user = getUser(uuidFromCookie);
-            locationRepository.deleteByUserAndId(user, parsedId);
-        } catch (NumberFormatException e) {
-            throw new UnauthorizedException(ERROR_MESSAGE_DELETION_USER + id);
-        }
+    public void delete(String uuidFromCookie, String locationId) {
+        User user = getUserByCookie(uuidFromCookie);
+        long parsedId = Parser.parseLocationId(locationId)
+                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_DELETION_USER + locationId));
+
+        locationRepository.deleteByUserAndId(user, parsedId);
     }
 
-    private User getUser(String uuidFromCookie) {
-        return sessionService.getUserById(uuidFromCookie)
-                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_FINDING_USER + uuidFromCookie));
+    private User getUserByCookie(String uuidFromCookie) {
+        return Parser.parseUUID(uuidFromCookie)
+                .map(this::getUserById)
+                .orElseThrow();
+    }
+
+    private User getUserById(UUID sessionId) {
+        return sessionService.getUserById(sessionId)
+                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_FINDING_USER + sessionId));
     }
 }

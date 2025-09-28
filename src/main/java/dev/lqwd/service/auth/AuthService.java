@@ -1,7 +1,7 @@
 package dev.lqwd.service.auth;
 
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
-import dev.lqwd.utils.Validator;
+import dev.lqwd.utils.Parser;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.entity.User;
 import dev.lqwd.repository.SessionRepository;
@@ -27,10 +27,24 @@ public class AuthService {
     private final UserService userService;
     private final CookieService cookieService;
 
+    public Cookie registration(UserRegistrationRequestDTO registrationRequest) {
+        User user = userService.save(registrationRequest);
+        String sessionId = sessionService.create(user);
+        return cookieService.create(sessionId);
+    }
+
     public Cookie openSession(AuthRequestDTO authRequest) {
         User user = userService.readByLogin(authRequest);
         String sessionId = sessionService.create(user);
         return cookieService.create(sessionId);
+    }
+
+    public Cookie closeSession(String sessionId) {
+        Parser.parseUUID(sessionId).ifPresentOrElse(
+                sessionService::delete,
+                () -> log.warn("Attempt to logout with invalid session cookie: {}", sessionId));
+
+        return cookieService.delete();
     }
 
     @Scheduled(fixedRate = SESSION_VALIDATION_INTERVAL_MS)
@@ -40,33 +54,6 @@ public class AuthService {
 
         log.info("Deleted {} expired sessions", deletedCount);
         return deletedCount;
-    }
-
-    public Cookie closeSession(String sessionId) {
-        Validator.parseUUID(sessionId).ifPresentOrElse(
-                sessionService::delete,
-                () -> log.warn("Attempt to logout with invalid session cookie: {}", sessionId));
-
-        return cookieService.delete();
-    }
-
-    public boolean hasValidSession(String sessionId) {
-        if (sessionId == null) {
-            return false;
-        }
-
-        return Validator.parseUUID(sessionId)
-                .map(sessionService::isPresent)
-                .orElseGet(() -> {
-                    log.warn("Provided incorrect cookie: {}", sessionId);
-                    return false;
-                });
-    }
-
-    public Cookie registration(UserRegistrationRequestDTO registrationRequest) {
-        User user = userService.save(registrationRequest);
-        String sessionId = sessionService.create(user);
-        return cookieService.create(sessionId);
     }
 
 }
