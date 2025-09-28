@@ -1,6 +1,6 @@
 package dev.lqwd.interceptor;
 
-import dev.lqwd.configuration.ApplicationUrlConfig;
+import dev.lqwd.configuration.app_config.ApplicationUrlConfig;
 import dev.lqwd.entity.User;
 import dev.lqwd.service.auth.CookieService;
 import dev.lqwd.service.repository_service.SessionService;

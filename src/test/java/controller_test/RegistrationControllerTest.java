@@ -1,8 +1,8 @@
 package controller_test;
 
 import config.TestPersistenceConfig;
-import dev.lqwd.configuration.ApplicationUrlConfig;
-import dev.lqwd.configuration.HttpClientConfig;
+import dev.lqwd.configuration.app_config.ApplicationUrlConfig;
+import dev.lqwd.configuration.app_config.HttpClientConfig;
 import dev.lqwd.configuration.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.entity.Session;

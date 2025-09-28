@@ -1,6 +1,6 @@
-package dev.lqwd.uri_api_builder;
+package dev.lqwd.service.weahter_api.infrastructure.uri_api_builder;
 
-import dev.lqwd.configuration.HttpClientConfig;
+import dev.lqwd.configuration.app_config.HttpClientConfig;
 import dev.lqwd.entity.Location;
 import dev.lqwd.exception.BadRequestException;
 import dev.lqwd.utils.Validator;

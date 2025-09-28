@@ -16,7 +16,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -26,7 +25,6 @@ import java.util.UUID;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {TestPersistenceConfig.class})
 @ActiveProfiles("test")
-@WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AuthServiceTest {
 

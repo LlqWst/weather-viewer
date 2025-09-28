@@ -24,11 +24,10 @@ import java.util.Properties;
 @ComponentScan({
         "dev.lqwd.service",
         "dev.lqwd.repository",
-        "dev.lqwd.uri_api_builder",
         "dev.lqwd.controller",
         "dev.lqwd.interceptor",
         "dev.lqwd.exception_handler",
-        "dev.lqwd.configuration",
+        "dev.lqwd.configuration.app_config",
         "dev.lqwd.mapper"
 })
 @PropertySource("classpath:app.properties")

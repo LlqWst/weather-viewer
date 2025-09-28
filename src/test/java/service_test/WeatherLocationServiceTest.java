@@ -1,48 +1,50 @@
 package service_test;
 
+import config.TestPersistenceConfig;
 import dev.lqwd.dto.weather.api_response.ApiLocationResponseDTO;
+import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.exception.api_weather_exception.ApiServiceUnavailableException;
+import dev.lqwd.exception.api_weather_exception.SubscriptionApiException;
+import dev.lqwd.exception.api_weather_exception.UnexpectedExternalApiException;
 import dev.lqwd.service.weahter_api.ApiWeatherLocationServiceImpl;
 import dev.lqwd.service.weahter_api.infrastructure.ApiHttpClient;
-import dev.lqwd.service.weahter_api.infrastructure.ExternalApiExceptionHandler;
-import dev.lqwd.service.weahter_api.infrastructure.JsonDeserializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 
 import java.math.BigDecimal;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {TestPersistenceConfig.class})
+@ActiveProfiles("test")
 class WeatherLocationServiceTest {
 
+    private static final String TEST_URI = "https://test.com";
+    private static final String TEST_NAME = "test_city";
+    private static final BigDecimal TEST_LAT = BigDecimal.valueOf(30.3162);
+    private static final BigDecimal TEST_LON = BigDecimal.valueOf(59.9387);
+    private static final String TEST_COUNTRY = "test_county";
+    private static final String TEST_STATE = "test_state";
+    private static final String MESSAGE_ERROR = "Message error";
 
-    public static final String TEST_URI = "test_uri";
-    public static final String TEST_NAME = "test_city";
-    public static final BigDecimal TEST_LAT = BigDecimal.valueOf(50);
-    public static final BigDecimal TEST_LON = BigDecimal.valueOf(80);
-    public static final String TEST_COUNTRY = "test_county";
-    public static final String TEST_STATE = "test_state";
 
-    @Mock
-    private JsonDeserializer jsonDeserializer;
-
-    @Mock
+    @MockitoBean
     private ApiHttpClient apiHttpClient;
 
-    @Mock
-    private ExternalApiExceptionHandler externalApiExceptionHandler;
-
-    @InjectMocks
-    private ApiWeatherLocationServiceImpl weatherLocationService;
-
+    @Autowired
+    private ApiWeatherLocationServiceImpl apiWeatherLocationService;
 
     @Test
     public void should_deserializeJsonLocation_after_getRequest() {
@@ -50,14 +52,14 @@ class WeatherLocationServiceTest {
         String mockJsonResponse = """
                 {
                     "name":"%s",
-                    "lat":"%bd",
-                    "lon":"%bd",
+                    "lat":%s,
+                    "lon":%s,
                     "country":"%s",
                     "state":"%s"
                 }
-                """.formatted(TEST_NAME, TEST_LAT, TEST_LON, TEST_COUNTRY, TEST_STATE);
+                """.formatted(TEST_NAME, TEST_LAT.toPlainString(), TEST_LON.toPlainString(), TEST_COUNTRY, TEST_STATE);
 
-        List<ApiLocationResponseDTO> deserializedResponse = List.of(
+        List<ApiLocationResponseDTO> deserializedMockResponse = List.of(
                 ApiLocationResponseDTO.builder()
                         .name(TEST_NAME)
                         .lat(TEST_LAT)
@@ -70,18 +72,58 @@ class WeatherLocationServiceTest {
         HttpResponse<String> mockHttpResponse = mock(HttpResponse.class);
         when(mockHttpResponse.body()).thenReturn(mockJsonResponse);
         when(mockHttpResponse.statusCode()).thenReturn(SC_OK);
-
         when(apiHttpClient.executeRequest(TEST_URI)).thenReturn(mockHttpResponse);
 
-        when(jsonDeserializer.deserialize(mockJsonResponse, ApiLocationResponseDTO.class))
-                .thenReturn(deserializedResponse);
-
-        List<ApiLocationResponseDTO> result = weatherLocationService.fetchApiData(TEST_URI);
+        List<ApiLocationResponseDTO> result = apiWeatherLocationService.fetchApiData(TEST_URI);
 
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(TEST_NAME, result.get(0).getName());
+        assertEquals(deserializedMockResponse, result);
+    }
 
-        verify(jsonDeserializer).deserialize(mockJsonResponse, ApiLocationResponseDTO.class);
+
+    @Test
+    public void should_throwException_after_ResponseWithCode400() {
+
+        should_throwException_after_ResponseWithCode(SC_BAD_REQUEST, BadRequestException.class);
+    }
+
+    @Test
+    public void should_throwException_after_ResponseWithCode401() {
+
+        should_throwException_after_ResponseWithCode(SC_UNAUTHORIZED, SubscriptionApiException.class);
+    }
+
+    @Test
+    public void should_throwException_after_ResponseWithCode500() {
+
+        should_throwException_after_ResponseWithCode(SC_INTERNAL_SERVER_ERROR, ApiServiceUnavailableException.class);
+    }
+
+    @Test
+    public void should_throwException_after_ResponseWithUnexpectedCode() {
+
+        int unexpectedCode = SC_CONFLICT;
+        should_throwException_after_ResponseWithCode(unexpectedCode, UnexpectedExternalApiException.class);
+    }
+
+    private void should_throwException_after_ResponseWithCode(int code, Class<? extends Exception> ExceptionClass) {
+
+        String mockJsonResponse = """
+                {
+                    "code":%d,
+                    "message":"%s"
+                }
+                """.formatted(code, MESSAGE_ERROR);
+
+        HttpResponse<String> mockHttpResponse = mock(HttpResponse.class);
+        when(mockHttpResponse.body()).thenReturn(mockJsonResponse);
+        when(mockHttpResponse.statusCode()).thenReturn(code);
+        when(apiHttpClient.executeRequest(TEST_URI)).thenReturn(mockHttpResponse);
+
+
+        assertThrows(ExceptionClass,
+                () -> apiWeatherLocationService.fetchApiData(TEST_URI));
+
     }
 
 }

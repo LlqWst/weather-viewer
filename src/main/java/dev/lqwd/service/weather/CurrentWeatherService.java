@@ -6,7 +6,7 @@ import dev.lqwd.entity.Location;
 import dev.lqwd.mapper.CurrentWeatherMapper;
 import dev.lqwd.service.repository_service.LocationService;
 import dev.lqwd.service.weahter_api.ApiCurrentWeatherService;
-import dev.lqwd.uri_api_builder.UriApiWeatherBuilder;
+import dev.lqwd.service.weahter_api.infrastructure.uri_api_builder.UriApiWeatherBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

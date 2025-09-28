@@ -39,7 +39,7 @@ public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T>
     }
 
     private void handleError(String body, int statusCode, String uri) {
-        log.warn("API responded with an error with an empty body. {} - {} - {}", uri, statusCode, body);
+        log.warn("API responded with an error with and empty body. {} - {} - {}", uri, statusCode, body);
         List<ApiErrorResponse> error = jsonDeserializer.deserialize(body, ApiErrorResponse.class);
         externalApiExceptionHandler.handle(error);
     }

@@ -25,11 +25,12 @@ public class MainPageController {
     public String redirectToSignIn(@CookieValue(value = "sessionId", required = false) String sessionId,
                                    Model model) {
 
-        if (authService.hasValidSession(sessionId)) {
-            List<CurrentWeatherResponseDTO> weatherResponseDTO = currentWeatherService.getWeatherForUser(sessionId);
-            model.addAttribute("locationsWeather", weatherResponseDTO);
-            return "main-page";
+        if (!authService.hasValidSession(sessionId)) {
+            return "unauthorized-main-page";
         }
-        return "unauthorized-main-page";
+
+        List<CurrentWeatherResponseDTO> weatherResponseDTO = currentWeatherService.getWeatherForUser(sessionId);
+        model.addAttribute("locationsWeather", weatherResponseDTO);
+        return "main-page";
     }
 }

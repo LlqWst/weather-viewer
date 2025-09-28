@@ -1,4 +1,4 @@
-package dev.lqwd.configuration;
+package dev.lqwd.configuration.app_config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
