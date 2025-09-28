@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Slf4j
-@Profile("dev")
+@Profile({"dev", "prod"})
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({

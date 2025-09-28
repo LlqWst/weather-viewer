@@ -36,9 +36,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${webMvc.corsRegistry.methods}")
     private String[] allowedMethods;
 
-    @Value("${webMvc.corsRegistry.applicationBasePath}")
-    private String applicationBasePath;
-
     @Value("${webMvc.corsRegistry.registryMapping}")
     private String registryMapping;
 
@@ -63,10 +60,26 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${webMvc.isSpringELCompiler}")
     private boolean isSpringELCompiler;
 
+    private final AuthInterceptor authInterceptor;
+
     public WebMvcConfig(AuthInterceptor authInterceptor) {
         this.authInterceptor = authInterceptor;
     }
 
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/images/**",
+                        "/css/**",
+                        "/js/**",
+                        "/static/**",
+                        "/webjars/**",
+                        "/favicon.ico"
+                );
+    }
 
     @Bean
     public Validator validator() {
@@ -78,13 +91,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         return validator();
     }
 
-    private final AuthInterceptor authInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**");
-    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
@@ -121,6 +127,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
     }
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/");
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/");
+        registry.addResourceHandler("/js/**")
+                .addResourceLocations("classpath:/static/js/");
+    }
+
+    @Override
     public void configureDefaultServletHandling(@NonNull DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
@@ -138,7 +154,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
 
-        registry.addMapping(applicationBasePath + registryMapping)
+        registry.addMapping(registryMapping)
                 .allowedOrigins(origins)
                 .allowedMethods(allowedMethods);
 
