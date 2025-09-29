@@ -1,7 +1,6 @@
 package dev.lqwd.controller;
 
 import dev.lqwd.dto.weather.CurrentWeatherResponseDTO;
-import dev.lqwd.service.auth.AuthService;
 import dev.lqwd.service.weather.CurrentWeatherService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

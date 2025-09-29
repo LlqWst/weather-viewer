@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Slf4j
 public class GlobalExceptionHandler {
 
+
     @ExceptionHandler(UserRegistrationException.class)
     public String handleUserAlreadyExistsException(Exception e,
                                                    RedirectAttributes redirectAttributes,

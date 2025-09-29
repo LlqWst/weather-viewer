@@ -3,7 +3,7 @@ package controller_test;
 import config.TestPersistenceConfig;
 import dev.lqwd.configuration.app_config.ApplicationUrlConfig;
 import dev.lqwd.configuration.app_config.HttpClientConfig;
-import dev.lqwd.configuration.WebMvcConfig;
+import dev.lqwd.configuration.web.WebMvcConfig;
 import dev.lqwd.controller.auth.RegistrationController;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.entity.Session;

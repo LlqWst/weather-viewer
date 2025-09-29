@@ -18,6 +18,7 @@ import java.time.Duration;
 public class HttpClientConfig {
 
     private static final int TIMEOUT_SEC = 10;
+    public static final String ID_NOT_SET = "APP_ID not set";
 
     @Value("${APP_ID:}")
     private String appId;
@@ -25,10 +26,9 @@ public class HttpClientConfig {
     @PostConstruct
     public void validate() {
         if (appId.isEmpty()) {
-            log.error("APP_ID not set");
-            throw new IllegalStateException("APP_ID not set");
+            log.error(ID_NOT_SET);
+            throw new IllegalStateException(ID_NOT_SET);
         }
-        log.info("APP_ID configured successfully");
     }
 
     @Bean
