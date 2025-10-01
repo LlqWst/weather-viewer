@@ -72,7 +72,7 @@ class WeatherLocationServiceTest {
         HttpResponse<String> mockHttpResponse = mock(HttpResponse.class);
         when(mockHttpResponse.body()).thenReturn(mockJsonResponse);
         when(mockHttpResponse.statusCode()).thenReturn(SC_OK);
-        when(apiHttpClient.executeRequest(TEST_URI)).thenReturn(mockHttpResponse);
+        when(apiHttpClient.executeGetRequest(TEST_URI)).thenReturn(mockHttpResponse);
 
         List<ApiLocationResponseDTO> result = apiWeatherLocationService.fetchApiData(TEST_URI);
 
@@ -118,7 +118,7 @@ class WeatherLocationServiceTest {
         HttpResponse<String> mockHttpResponse = mock(HttpResponse.class);
         when(mockHttpResponse.body()).thenReturn(mockJsonResponse);
         when(mockHttpResponse.statusCode()).thenReturn(code);
-        when(apiHttpClient.executeRequest(TEST_URI)).thenReturn(mockHttpResponse);
+        when(apiHttpClient.executeGetRequest(TEST_URI)).thenReturn(mockHttpResponse);
 
 
         assertThrows(ExceptionClass,

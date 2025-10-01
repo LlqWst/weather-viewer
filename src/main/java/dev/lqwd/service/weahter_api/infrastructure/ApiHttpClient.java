@@ -20,7 +20,7 @@ public class ApiHttpClient {
     public static final String REQUEST_INTERRUPTED = "Request interrupted: ";
     private final HttpClient httpClient;
 
-    public HttpResponse<String> executeRequest(String uri) {
+    public HttpResponse<String> executeGetRequest(String uri) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(uri))

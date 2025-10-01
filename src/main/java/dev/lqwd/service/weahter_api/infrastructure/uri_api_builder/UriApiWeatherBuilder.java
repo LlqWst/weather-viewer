@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UriApiWeatherBuilder {
 
     private static final String URL_WEATHER = "https://api.openweathermap.org/data/2.5/weather";
-    private static final String UNITS = "metric";
+    private static final String UNITS_CELSIUS = "metric";
     private final HttpClientConfig httpClientConfig;
 
     public String build(Location location) throws BadRequestException {
@@ -21,7 +21,7 @@ public class UriApiWeatherBuilder {
                 .queryParam("lat", location.getLatitude())
                 .queryParam("lon", location.getLongitude())
                 .queryParam("appid", httpClientConfig.getAppId())
-                .queryParam("units", UNITS)
+                .queryParam("units", UNITS_CELSIUS)
                 .build()
                 .toUriString();
 

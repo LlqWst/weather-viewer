@@ -4,8 +4,10 @@ import lombok.Builder;
 
 
 @Builder
-public record ApiErrorResponse(
-        int code,
-        String message) {
+public record ApiErrorResponse
+        (
+                int code,
+                String message
+        ) {
 
 }

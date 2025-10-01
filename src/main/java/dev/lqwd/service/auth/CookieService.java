@@ -16,13 +16,13 @@ public class CookieService {
     private static final int COOKIE_AGE_MINUTES = 60 * 30;
     private static final String SESSION_ID = "sessionId";
     private static final String EMPTY = "";
-    public static final String ROOT_URI = "/";
+    public static final String ROOT = "/";
     public static final int EXPIRY = 0;
 
     public Cookie create(String sessionId) {
         Cookie cookie = new Cookie(SESSION_ID, sessionId);
         cookie.setMaxAge(COOKIE_AGE_MINUTES);
-        cookie.setPath(ROOT_URI);
+        cookie.setPath(ROOT);
         cookie.setHttpOnly(true);
 
         return cookie;
@@ -31,7 +31,7 @@ public class CookieService {
     public Cookie delete() {
         Cookie cookie = new Cookie(SESSION_ID, EMPTY);
         cookie.setMaxAge(EXPIRY);
-        cookie.setPath(ROOT_URI);
+        cookie.setPath(ROOT);
 
         return cookie;
     }

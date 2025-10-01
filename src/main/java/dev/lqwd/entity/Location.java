@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
@@ -12,14 +11,13 @@ import java.math.BigDecimal;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Getter
-@Service
 @Table(name = "locations", schema = "weather_viewer",
         uniqueConstraints = @UniqueConstraint(
                 name = "unique_user_location",
                 columnNames = {"user_id", "latitude", "longitude"}
         ))
+@Entity
 public class Location {
 
     @Id

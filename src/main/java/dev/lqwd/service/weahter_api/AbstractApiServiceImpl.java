@@ -25,7 +25,7 @@ public abstract class AbstractApiServiceImpl<T> implements AbstractApiService<T>
 
     @Override
     public List<T> fetchApiData(String uri) {
-        HttpResponse<String> response = apiHttpClient.executeRequest(uri);
+        HttpResponse<String> response = apiHttpClient.executeGetRequest(uri);
         return processResponse(response, uri);
     }
 

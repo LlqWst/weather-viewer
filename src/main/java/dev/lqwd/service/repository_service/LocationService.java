@@ -3,7 +3,9 @@ package dev.lqwd.service.repository_service;
 import dev.lqwd.dto.weather.AddLocationRequestDTO;
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
+import dev.lqwd.exception.LocationAlreadyAddedException;
 import dev.lqwd.exception.UnauthorizedException;
+import dev.lqwd.mapper.LocationMapper;
 import dev.lqwd.repository.LocationRepository;
 import dev.lqwd.utils.Parser;
 import lombok.AllArgsConstructor;
@@ -20,53 +22,52 @@ import java.util.UUID;
 @AllArgsConstructor
 public class LocationService {
 
-    private static final String ERROR_MESSAGE_LOCATION_ADDED = "Location already added for user: {}";
-    private static final String ERROR_MESSAGE_FINDING_USER = "Error during find User by UUID: ";
-    private static final String ERROR_MESSAGE_DELETION_USER = "Incorrect ID for deletion: ";
+    private static final String ERROR_MESSAGE_LOCATION_ALREADY_ADDED = "Location '%s' already added, lat:%s, lon:%s: ";
+    private static final String ERROR_MESSAGE_INCORRECT_SESSION_ID = "Incorrect Session Id: ";
+    private static final String ERROR_MESSAGE_SESSION_ID_NOT_FOUND = "Error during find User by UUID: ";
+    private static final String ERROR_MESSAGE_INCORRECT_LOCATION_ID = "Incorrect location ID for deletion: ";
 
     private final LocationRepository locationRepository;
     private final SessionService sessionService;
+    private final LocationMapper locationMapper;
 
 
     public void save(AddLocationRequestDTO locationDTO, String uuidFromCookie) {
-        User user = getUserByCookie(uuidFromCookie);
+        User user = getUserByUuidFromCookie(uuidFromCookie);
+
         try {
-            locationRepository.save(Location.builder()
-                    .user(user)
-                    .name(locationDTO.name())
-                    .latitude(locationDTO.lat())
-                    .longitude(locationDTO.lon())
-                    .build());
+            locationRepository.save(locationMapper.toLocation(locationDTO, user));
         } catch (ConstraintViolationException e) {
             if (e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {
-                log.warn(ERROR_MESSAGE_LOCATION_ADDED, user);
-                return;
+                log.warn("Location already added for user: {}", user);
+                throw new LocationAlreadyAddedException(ERROR_MESSAGE_LOCATION_ALREADY_ADDED
+                        .formatted(locationDTO.name(), locationDTO.lat(), locationDTO.lon()));
             }
             throw e;
         }
     }
 
     public List<Location> get(UUID sessionId) {
-        User user = getUserById(sessionId);
-        return locationRepository.findAllByUserId(user);
+        return locationRepository.findAllByUserId(sessionId);
     }
 
     public void delete(String uuidFromCookie, String locationId) {
-        User user = getUserByCookie(uuidFromCookie);
-        long parsedId = Parser.parseLocationId(locationId)
-                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_DELETION_USER + locationId));
+        UUID sessionId = getSessionId(uuidFromCookie);
+        long parsedLocationId = Parser.parseLocationId(locationId)
+                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_INCORRECT_LOCATION_ID + locationId));
 
-        locationRepository.deleteByUserAndId(user, parsedId);
+        locationRepository.deleteByUserIdAndLocationId(sessionId, parsedLocationId);
     }
 
-    private User getUserByCookie(String uuidFromCookie) {
+    private static UUID getSessionId(String uuidFromCookie) {
         return Parser.parseUUID(uuidFromCookie)
-                .map(this::getUserById)
-                .orElseThrow();
+                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_INCORRECT_SESSION_ID + uuidFromCookie));
     }
 
-    private User getUserById(UUID sessionId) {
+    private User getUserByUuidFromCookie(String uuidFromCookie) {
+        UUID sessionId = getSessionId(uuidFromCookie);
         return sessionService.getUserById(sessionId)
-                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_FINDING_USER + sessionId));
+                .orElseThrow(() -> new UnauthorizedException(ERROR_MESSAGE_SESSION_ID_NOT_FOUND + uuidFromCookie));
+
     }
 }

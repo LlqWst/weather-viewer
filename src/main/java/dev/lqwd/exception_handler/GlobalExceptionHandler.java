@@ -3,6 +3,7 @@ package dev.lqwd.exception_handler;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.exception.LocationAlreadyAddedException;
 import dev.lqwd.exception.UnauthorizedException;
 import dev.lqwd.exception.api_weather_exception.ApiServiceUnavailableException;
 import dev.lqwd.exception.api_weather_exception.SubscriptionApiException;
@@ -63,6 +64,15 @@ public class GlobalExceptionHandler {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         model.addAttribute("error", e.getMessage());
         return "search-results";
+    }
+
+    @ExceptionHandler(LocationAlreadyAddedException.class)
+    public String handleLocationAlreadyAddedException(Exception e,
+                                                      RedirectAttributes redirectAttributes) {
+
+        log.warn("Exception occurred:  {}", e.getMessage(), e);
+        redirectAttributes.addFlashAttribute("error", e.getMessage());
+        return "redirect:/";
     }
 
     @ExceptionHandler(UnauthorizedException.class)

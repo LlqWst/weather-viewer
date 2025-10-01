@@ -7,7 +7,6 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @Getter
 @Setter
 @NamedQuery(
@@ -15,6 +14,7 @@ import lombok.*;
         query = "SELECT u FROM User u WHERE u.login = :login"
 )
 @Table(name = "users", schema = "weather_viewer")
+@Entity
 public class User {
 
     @Id

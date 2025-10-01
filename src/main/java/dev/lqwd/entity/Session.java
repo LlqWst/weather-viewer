@@ -6,7 +6,6 @@ import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.type.descriptor.jdbc.UUIDJdbcType;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,11 +14,10 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Getter
 @Setter
-@Service
 @Table(name = "sessions", schema = "weather_viewer")
+@Entity
 public class Session {
 
     @Id

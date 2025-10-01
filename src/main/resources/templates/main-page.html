@@ -57,6 +57,13 @@
                     <button type="submit" class="btn btn-outline-success">Search</button>
                 </div>
             </form>
+
+            <div th:if="${error}" class="row justify-content-center">
+                <div class="alert alert-danger" role="alert">
+                    <span th:text="${error}"></span>
+                </div>
+            </div>
+
             <div>
                 <div class="row">
                     <div th:each="weather : ${locationsWeather}" class="col-12 col-lg-3 col-md-6 mb-4">
