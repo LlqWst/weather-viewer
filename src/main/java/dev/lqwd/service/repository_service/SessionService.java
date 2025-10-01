@@ -21,9 +21,8 @@ public class SessionService {
     private final SessionRepository sessionRepository;
 
     public String create(User user) {
-        return Optional.of(sessionRepository.save(Session.builder()
-                                .user(user)
-                                .build())
+        return Optional.of(sessionRepository.save(
+                Session.builder().user(user).build())
                         .getId()
                         .toString())
                 .orElseThrow(() -> new DataBaseException(ERROR_MESSAGE_CREATE_SESSION + user));
@@ -33,8 +32,7 @@ public class SessionService {
         if (sessionId == null) {
             return false;
         }
-        return sessionRepository.findById(sessionId)
-                .isPresent();
+        return sessionRepository.findById(sessionId).isPresent();
     }
 
     public Optional<User> getUserById(UUID sessionId) {
