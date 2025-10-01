@@ -26,8 +26,8 @@ public class ExternalApiExceptionHandler {
         }
 
         ApiErrorResponse errorResponse = error.get(0);
-        int statusCode = errorResponse.getCode();
-        String message = errorResponse.getMessage();
+        int statusCode = errorResponse.code();
+        String message = errorResponse.message();
 
         log.warn("External API error: {} - {}", statusCode, message);
         switch (statusCode) {

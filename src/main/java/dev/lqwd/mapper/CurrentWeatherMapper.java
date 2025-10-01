@@ -14,6 +14,8 @@ public interface CurrentWeatherMapper {
     String URI_ICON = "https://openweathermap.org/img/wn/";
     String SIZE_100_X_100PX = "@2x";
     String EXTENSION = ".png";
+    int FIRST = 0;
+    int TO_DECIMAL = 1;
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "main.temp", target = "temp", qualifiedByName = "roundToScale1")
@@ -27,20 +29,20 @@ public interface CurrentWeatherMapper {
         if (value == null) {
             return null;
         }
-        return value.setScale(1, RoundingMode.HALF_UP);
+        return value.setScale(TO_DECIMAL, RoundingMode.HALF_UP);
     }
 
     @AfterMapping
     default void mapCurrentWeatherFields(ApiCurrentWeatherResponseDTO weatherDTO,
                                          @MappingTarget CurrentWeatherResponseDTO responseDTO) {
 
-        if (weatherDTO.getWeather() == null || weatherDTO.getWeather().isEmpty()) {
+        if (weatherDTO.weather() == null || weatherDTO.weather().isEmpty()) {
             return;
         }
 
-        ApiCurrentWeatherResponseDTO.Weather weather = weatherDTO.getWeather().get(0);
-        String description = weather.getDescription();
-        String iconCode = weather.getIcon();
+        ApiCurrentWeatherResponseDTO.Weather weather = weatherDTO.weather().get(FIRST);
+        String description = weather.description();
+        String iconCode = weather.icon();
 
         if (description != null && !description.isBlank()) {
             responseDTO.setDescription(description);

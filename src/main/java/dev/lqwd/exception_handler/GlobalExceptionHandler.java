@@ -61,8 +61,8 @@ public class GlobalExceptionHandler {
 
         log.warn("Exception occurred:  {}", e.getMessage(), e);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        model.addAttribute("errorMessage", e.getMessage());
-        return "error";
+        model.addAttribute("error", e.getMessage());
+        return "search-results";
     }
 
     @ExceptionHandler(UnauthorizedException.class)

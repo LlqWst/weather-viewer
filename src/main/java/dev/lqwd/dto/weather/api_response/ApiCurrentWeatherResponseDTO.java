@@ -9,48 +9,36 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ApiCurrentWeatherResponseDTO {
-
-    private List<Weather> weather;
-    private Main main;
-    private Sys sys;
-    private String name;
-    private String timezone;
-    private String id;
-    private String cod;
+public record ApiCurrentWeatherResponseDTO(
+        List<Weather> weather,
+        Main main,
+        Sys sys,
+        String name,
+        String timezone,
+        String id,
+        String cod) {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    public static class Weather {
-        private String id;
-        private String main;
-        private String description;
-        private String icon;
+    public record Weather(
+            String id,
+            String main,
+            String description,
+            String icon) {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    public static class Main {
-        private BigDecimal temp;
+    public record Main(
+            BigDecimal temp,
 
-        @JsonProperty("feels_like")
-        private BigDecimal feelsLike;
-        private int humidity;
+            @JsonProperty("feels_like")
+            BigDecimal feelsLike,
+            int humidity) {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    public static class Sys {
-        private String country;
+    public record Sys(
+            String country) {
     }
+
 }

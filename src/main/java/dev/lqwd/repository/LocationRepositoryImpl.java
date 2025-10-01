@@ -2,7 +2,7 @@ package dev.lqwd.repository;
 
 import dev.lqwd.entity.Location;
 import dev.lqwd.entity.User;
-import dev.lqwd.exception.BadRequestException;
+import dev.lqwd.exception.DataBaseException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +41,7 @@ public class LocationRepositoryImpl extends AbstractRepositoryImpl<Location, Lon
     @Transactional
     public void deleteByUserAndId(User user, Long id) {
         Location location = findByUserAndId(user, id)
-                .orElseThrow(() -> new BadRequestException(INCORRECT_LOCATION_ID_MESSAGE.formatted(id, user)));
+                .orElseThrow(() -> new DataBaseException(INCORRECT_LOCATION_ID_MESSAGE.formatted(id, user)));
 
         entityManager.remove(location);
     }

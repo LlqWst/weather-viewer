@@ -33,9 +33,9 @@ public class LocationService {
         try {
             locationRepository.save(Location.builder()
                     .user(user)
-                    .name(locationDTO.getName())
-                    .latitude(locationDTO.getLat())
-                    .longitude(locationDTO.getLon())
+                    .name(locationDTO.name())
+                    .latitude(locationDTO.lat())
+                    .longitude(locationDTO.lon())
                     .build());
         } catch (ConstraintViolationException e) {
             if (e.getKind() == ConstraintViolationException.ConstraintKind.UNIQUE) {

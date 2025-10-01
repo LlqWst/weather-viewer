@@ -52,7 +52,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private Optional<User> getCurrentUser(HttpServletRequest request) {
-        return cookieService.getSessionId(request.getCookies())
+        return cookieService.getSessionId(
+                request.getCookies())
                 .flatMap(sessionService::getUserById);
     }
 }

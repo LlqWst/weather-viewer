@@ -1,15 +1,14 @@
 package dev.lqwd.controller.weather;
 
-import dev.lqwd.dto.weather.LocationSearchRequestDTO;
+
 import dev.lqwd.dto.weather.api_response.ApiLocationResponseDTO;
 import dev.lqwd.service.weather.WeatherLocationService;
-import jakarta.validation.Valid;
+import dev.lqwd.utils.Validator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -20,14 +19,12 @@ public class SearchController {
     private final WeatherLocationService weatherLocationService;
 
     @GetMapping("/search")
-    public String redirectToSignIn(@Valid @ModelAttribute("location") LocationSearchRequestDTO location,
-                                   BindingResult bindingResult,
+    public String redirectToSignIn(@RequestParam("location") String search,
                                    Model model) {
 
-        if (bindingResult.hasErrors()) {
-            return "search-results";
-        }
-        List<ApiLocationResponseDTO> locationsDTO = weatherLocationService.getLocations(location.getLocation());
+        Validator.validate(search);
+
+        List<ApiLocationResponseDTO> locationsDTO = weatherLocationService.getLocations(search);
         model.addAttribute("locations", locationsDTO);
         return "search-results";
     }

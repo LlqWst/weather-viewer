@@ -20,6 +20,7 @@ import java.util.List;
 @Slf4j
 public class CurrentWeatherService {
 
+    public static final int FIRST = 0;
     private final CurrentWeatherMapper currentWeatherMapper;
     private final LocationService locationService;
     private final ApiCurrentWeatherService apiCurrentWeatherService;
@@ -42,7 +43,7 @@ public class CurrentWeatherService {
                     if (weatherData.isEmpty()) {
                         return getEmptyWeatherDTO(weatherData);
                     }
-                    CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData.get(0));
+                    CurrentWeatherResponseDTO responseDto = currentWeatherMapper.toResponseDto(weatherData.get(FIRST));
                     responseDto.setId(location.getId());
                     responseDto.setName(location.getName());
                     return responseDto;

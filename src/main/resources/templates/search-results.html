@@ -29,7 +29,7 @@
         <form th:action="@{/search}" method="get">
             <div class="d-flex my-4">
                 <div class="input-group location-search-input-group me-3">
-                    <input th:object="${location}" class="form-control" type="text" name="location"
+                    <input th:class="form-control" type="text" name="location"
                            placeholder="Enter location" required>
                     <button class="btn btn-outline-secondary btn-sm clear-input-button" type="button"
                             onclick="this.previousElementSibling.value=''">
@@ -39,6 +39,12 @@
                 <button type="submit" class="btn btn-outline-success">Search</button>
             </div>
         </form>
+
+        <div th:if="${error}" class="row justify-content-center">
+            <div class="alert alert-danger" role="alert">
+                <span th:text="${error}"></span>
+            </div>
+        </div>
 
         <div>
             <h2>Locations:</h2>
