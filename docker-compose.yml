@@ -1,0 +1,27 @@
+  services:
+    postgres:
+      image: postgres:15
+      container_name: postgres_db
+      environment:
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASS}
+      ports:
+        - "5432:5432"
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+    tomcat:
+      container_name: tomcat_app
+      build: .
+      environment:
+        DB_USER: ${DB_USER}
+        DB_PASS: ${DB_PASS}
+        APP_ID: ${APP_ID}
+      ports:
+        - "8080:8080"
+      depends_on:
+        - postgres
+
+  volumes:
+    postgres_data:

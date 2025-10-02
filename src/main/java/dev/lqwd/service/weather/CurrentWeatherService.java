@@ -32,7 +32,6 @@ public class CurrentWeatherService {
                 .map(locationService::get)
                 .map(this::getCurrentWeather)
                 .orElseGet(Collections::emptyList);
-
     }
 
     private List<CurrentWeatherResponseDTO> getCurrentWeather(List<Location> locations) {

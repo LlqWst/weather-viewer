@@ -13,7 +13,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class MainPageController {
+public class HomePageController {
 
     private final CurrentWeatherService currentWeatherService;
 
@@ -24,6 +24,6 @@ public class MainPageController {
 
         List<CurrentWeatherResponseDTO> weatherResponseDTO = currentWeatherService.getWeatherForUser(sessionId);
         model.addAttribute("locationsWeather", weatherResponseDTO);
-        return "main-page";
+        return "home";
     }
 }

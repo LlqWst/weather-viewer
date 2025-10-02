@@ -26,6 +26,9 @@ public class WhiteListFilter extends HttpFilter {
             "/sign-out", "/add-location", "/delete-location",
             "/search-results", "/error");
 
+    private static final List<String> STATIC_RESOURCES = List.of(
+            "/css/", "/js/", "/images/", "/webjars/");
+
     private static final String ERROR_PAGE = "/weather-viewer/error";
 
     @Override
@@ -36,8 +39,10 @@ public class WhiteListFilter extends HttpFilter {
         HttpServletResponse httpRes = (HttpServletResponse) servletResponse;
 
         String path = httpReq.getServletPath();
+        boolean isStaticResource = STATIC_RESOURCES.stream()
+                .anyMatch(path::startsWith);
 
-        if (WHITE_LIST.contains(path)) {
+        if (WHITE_LIST.contains(path) || isStaticResource) {
             chain.doFilter(httpReq, httpRes);
         } else {
             log.warn("Attempt to request to a non-existent path. PATH: {}", path);

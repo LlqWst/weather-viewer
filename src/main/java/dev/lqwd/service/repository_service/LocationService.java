@@ -22,7 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class LocationService {
 
-    private static final String ERROR_MESSAGE_LOCATION_ALREADY_ADDED = "Location '%s' already added, lat:%s, lon:%s: ";
+    private static final String ERROR_MESSAGE_LOCATION_ALREADY_ADDED = "Location '%s' already added, latitude:%s, longitude:%s";
     private static final String ERROR_MESSAGE_INCORRECT_SESSION_ID = "Incorrect Session Id: ";
     private static final String ERROR_MESSAGE_SESSION_ID_NOT_FOUND = "Error during find User by UUID: ";
     private static final String ERROR_MESSAGE_INCORRECT_LOCATION_ID = "Incorrect location ID for deletion: ";
