@@ -49,8 +49,9 @@ public class RegistrationControllerTest {
 
     private static final String INIT_USER_LOGIN = "test_1";
     private static final String CORRECT_PASSWORD = "123456";
+    public static final String SIGN_UP = "sign-up";
     private static final String BASE_URL = "/weather-viewer";
-    private static final String URL_SIGN_UP = BASE_URL + "/sign-up";
+    private static final String URL_SIGN_UP = BASE_URL + "/" + SIGN_UP;
     private static final String URL_HOME = BASE_URL + "/";
     private static final String COOKIE_NAME = "sessionId";
 
@@ -173,7 +174,7 @@ public class RegistrationControllerTest {
                         .contextPath(BASE_URL)
                         .cookie(cookie))
                 .andDo(print())
-                .andExpect(view().name("sign-up"))
+                .andExpect(view().name(SIGN_UP))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
 
     }
@@ -205,8 +206,8 @@ public class RegistrationControllerTest {
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", CORRECT_PASSWORD))
                 .andDo(print())
-                .andExpect(flash().attribute("error", "User already exists"))
-                .andExpect(redirectedUrl(URL_SIGN_UP));
+                .andExpect(model().attribute("error", "User already exists"))
+                .andExpect(view().name(SIGN_UP));
 
         Optional<User> savedUser = userRepository.findByLogin(loginForTest);
         Assertions.assertTrue(savedUser.isPresent());
@@ -226,8 +227,8 @@ public class RegistrationControllerTest {
                         .param("password", CORRECT_PASSWORD)
                         .param("passwordConfirm", incorrectPassword))
                 .andDo(print())
-                .andExpect(flash().attribute("error", "Passwords don't match"))
-                .andExpect(redirectedUrl(URL_SIGN_UP));
+                .andExpect(model().attribute("error", "Passwords don't match"))
+                .andExpect(view().name(SIGN_UP));
 
         Optional<User> savedUser = userRepository.findByLogin(loginForTest);
         Assertions.assertTrue(savedUser.isEmpty());

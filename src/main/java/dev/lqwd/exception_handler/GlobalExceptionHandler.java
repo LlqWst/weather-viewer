@@ -3,7 +3,6 @@ package dev.lqwd.exception_handler;
 import dev.lqwd.dto.auth.AuthRequestDTO;
 import dev.lqwd.dto.auth.UserRegistrationRequestDTO;
 import dev.lqwd.exception.BadRequestException;
-import dev.lqwd.exception.LocationAlreadyAddedException;
 import dev.lqwd.exception.UnauthorizedException;
 import dev.lqwd.exception.api_weather_exception.ApiServiceUnavailableException;
 import dev.lqwd.exception.api_weather_exception.SubscriptionApiException;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ControllerAdvice
 @Slf4j
@@ -25,34 +23,34 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserRegistrationException.class)
     public String handleUserAlreadyExistsException(Exception e,
-                                                   RedirectAttributes redirectAttributes,
-                                                   HttpServletRequest request) {
+                                                   HttpServletRequest request,
+                                                   Model model) {
 
 
         log.error("Exception occurred:  {}", e.getMessage(), e);
-        redirectAttributes.addFlashAttribute("error", e.getMessage());
 
         UserRegistrationRequestDTO requestDTO = new UserRegistrationRequestDTO();
         requestDTO.setLogin(request.getParameter("login"));
-        redirectAttributes.addFlashAttribute("userCreationRequest", requestDTO);
 
-        return "redirect:/sign-up";
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("userCreationRequest", requestDTO);
+        return "sign-up";
     }
 
     @ExceptionHandler(UserAuthException.class)
     public String handleUserAuthExceptionException(Exception e,
-                                                   RedirectAttributes redirectAttributes,
-                                                   HttpServletRequest request) {
+                                                   HttpServletRequest request,
+                                                   Model model) {
 
 
         log.warn("Exception occurred:  {}", e.getMessage(), e);
-        redirectAttributes.addFlashAttribute("error", e.getMessage());
 
         AuthRequestDTO requestDTO = new AuthRequestDTO();
         requestDTO.setLogin(request.getParameter("login"));
-        redirectAttributes.addFlashAttribute("authRequest", requestDTO);
 
-        return "redirect:/sign-in";
+        model.addAttribute("error", e.getMessage());
+        model.addAttribute("authRequest", requestDTO);
+        return "sign-in";
     }
 
     @ExceptionHandler(BadRequestException.class)
@@ -64,15 +62,6 @@ public class GlobalExceptionHandler {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         model.addAttribute("error", e.getMessage());
         return "search-results";
-    }
-
-    @ExceptionHandler(LocationAlreadyAddedException.class)
-    public String handleLocationAlreadyAddedException(Exception e,
-                                                      RedirectAttributes redirectAttributes) {
-
-        log.warn("Exception occurred:  {}", e.getMessage(), e);
-        redirectAttributes.addFlashAttribute("error", e.getMessage());
-        return "redirect:/";
     }
 
     @ExceptionHandler(UnauthorizedException.class)

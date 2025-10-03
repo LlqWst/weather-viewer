@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 @Table(name = "locations", schema = "weather_viewer",
         uniqueConstraints = @UniqueConstraint(
                 name = "unique_user_location",
@@ -39,7 +40,7 @@ public class Location {
 
     @Column(precision = 10,
             scale = 6,
-            columnDefinition = "NUMERIC(9,6) CHECK (latitude BETWEEN -180 AND 180)")
+            columnDefinition = "NUMERIC(10,6) CHECK (longitude BETWEEN -180 AND 180)")
     private BigDecimal longitude;
 
 }

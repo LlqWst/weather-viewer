@@ -29,7 +29,7 @@ public class CurrentWeatherService {
 
     public List<CurrentWeatherResponseDTO> getWeatherForUser(String sessionId) {
         return Parser.parseUUID(sessionId)
-                .map(locationService::get)
+                .map(locationService::getAllLocations)
                 .map(this::getCurrentWeather)
                 .orElseGet(Collections::emptyList);
     }

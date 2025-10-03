@@ -49,21 +49,26 @@
         <div>
             <h2>Locations:</h2>
             <div class="row">
-                <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="location : ${locations}">
+                <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="locationWithStatus : ${locationsWithStatus}">
                     <div class="card h-100">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title" th:text="${location.name}"></h5>
-                            <p class="card-text mb-1">Latitude: [[${location.lat}]]</p>
-                            <p class="card-text mb-1">Longitude: [[${location.lon}]]</p>
-                            <p class="card-text mb-1">Country: [[${location.country}]]</p>
-                            <p class="card-text mb-3" th:if="${location.state}">State: <span
-                                    th:text="${location.state}">State</span></p>
-                            <div class="mt-auto">
+                            <h5 class="card-title" th:text="${locationWithStatus.location().name}"></h5>
+                            <p class="card-text mb-1">Latitude: [[${locationWithStatus.location().lat}]]</p>
+                            <p class="card-text mb-1">Longitude: [[${locationWithStatus.location().lon}]]</p>
+                            <p class="card-text mb-1">Country: [[${locationWithStatus.location().country}]]</p>
+                            <p class="card-text mb-3" th:if="${locationWithStatus.location().state}">State: <span
+                                    th:text="${locationWithStatus.location().state}">State</span></p>
+                            <div th:unless="${locationWithStatus.isAdded()}" class="mt-auto">
                                 <form th:action="@{/add-location}" method="post" style="display: inline;">
-                                    <input type="hidden" name="name" th:value="${location.name}">
-                                    <input type="hidden" name="lat" th:value="${location.lat}">
-                                    <input type="hidden" name="lon" th:value="${location.lon}">
+                                    <input type="hidden" name="name" th:value="${locationWithStatus.location().name}">
+                                    <input type="hidden" name="lat" th:value="${locationWithStatus.location().lat}">
+                                    <input type="hidden" name="lon" th:value="${locationWithStatus.location().lon}">
                                     <button type="submit" class="btn btn-primary w-100">Add</button>
+                                </form>
+                            </div>
+                            <div th:if="${locationWithStatus.isAdded()}" class="mt-auto">
+                                <form style="display: inline;">
+                                    <button class="btn btn-secondary w-100" disabled>Added</button>
                                 </form>
                             </div>
                         </div>
