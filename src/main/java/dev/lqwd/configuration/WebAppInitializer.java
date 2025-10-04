@@ -14,7 +14,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    public static final String PROFILE = "dev";
+    public static final String PROFILE = "prod";
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {

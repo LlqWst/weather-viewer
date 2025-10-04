@@ -22,6 +22,7 @@ public class UriApiWeatherBuilder {
                 .queryParam("lon", location.getLongitude())
                 .queryParam("appid", httpClientConfig.getAppId())
                 .queryParam("units", UNITS_CELSIUS)
+                .encode()
                 .build()
                 .toUriString();
 
