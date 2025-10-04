@@ -18,9 +18,9 @@
 
 ---
 
-## 🖥️ How It Works
+## 🖥️ Принцип работы
 
-### 🔑 Authentication
+### 🔑 Аутентификация
 - **Sign up** → Регистрация нового пользователя
 - **Sign in** → Вход под пользователем с созданием сессии + Cookie с временем жизни
 - **Logout** → Удаление сессии и Cookie
@@ -40,16 +40,16 @@
 
 ---
 
-## 🧰 How to Run
+## 🧰 Как запустить
 
-### 1️⃣ **Prerequisites**
+### 1️⃣ **Подготовка**
 - **Java 17** installed
 - **PostgreSQL**
 - **Tomcat 10**
 - **Clone Repository** — https://github.com/LlqWst/weather-viewer.git
 - **OpenWeather API Key** ([OpenAPI](https://openweathermap.org/api))
 
-### 2️⃣ **Configure Database and API Key**
+### 2️⃣ **Конфигурация БД и API**
 Создайте схему в PostgreSQL:
 ```sql
 CREATE SCHEMA weather_viewer;
@@ -70,12 +70,12 @@ set DB_PASS=YOUR_DB_PASSWORD
 set APP_ID=YOUR_OPENWEATHER_API_KEY
 ```
 
-### 3️⃣ **Build the Project**
+### 3️⃣ **Build Проекта**
 ```bash
 mvn clean package
 ```
 
-### 4️⃣ **Deploy to Tomcat**
+### 4️⃣ **Деплой через Tomcat**
 - Cкопируйте WAR из `target/weather-tracker.war` в папку Tomcat `webapps`
 - запустите Tomcat:
 
@@ -91,5 +91,5 @@ startup.bat
 
 ---
 
-## 📚 Additional Information
+## 📚 Дополнительная информация
 Проект был завершен в рамках [Java Backend Learning Roadmap](https://zhukovsd.github.io/java-backend-learning-course/projects/weather-viewer/)
