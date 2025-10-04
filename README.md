@@ -54,8 +54,21 @@
 ```sql
 CREATE SCHEMA weather_viewer;
 ```
-- Заполните переменные окружения в **.env**.
-- Удалите `.exp` у **.env** файла.
+- Добавить переменные окружения.
+- 
+  **Linux / macOS (bash/zsh):**
+```bash
+export DB_USER=YOUR_DB_USERNAME
+export DB_PASS=YOUR_DB_PASSWORD
+export APP_ID=YOUR_OPENWEATHER_API_KEY
+```
+
+**Windows (Command Prompt):**
+```shell
+set DB_USER=YOUR_DB_USERNAME
+set DB_PASS=YOUR_DB_PASSWORD
+set APP_ID=YOUR_DB_PASSWORD
+```
 
 ### 3️⃣ **Build the Project**
 ```bash
@@ -63,10 +76,16 @@ mvn clean package
 ```
 
 ### 4️⃣ **Deploy to Tomcat**
-- Copy the generated WAR from `target/weather-tracker.war` into Tomcat’s `webapps` folder
-- Start Tomcat:
+- Cкопируйте WAR из `target/weather-tracker.war` в папку Tomcat `webapps`
+- запустите Tomcat:
+
+Для Linux/MAC:
 ```bash
 $CATALINA_HOME/bin/startup.sh
+```
+Для Windows:
+```shell
+startup.bat
 ```
 - App available at [http://localhost:8080/weather-viewer/](http://localhost:8080/weather-viewer/)
 
