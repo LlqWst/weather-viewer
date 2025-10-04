@@ -55,19 +55,19 @@
 CREATE SCHEMA weather_viewer;
 ```
 - Добавить переменные окружения.
-- 
-  **Linux / macOS (bash/zsh):**
+
+**Linux / macOS (bash/zsh):**
 ```bash
-export DB_USER=YOUR_DB_USERNAME
-export DB_PASS=YOUR_DB_PASSWORD
-export APP_ID=YOUR_OPENWEATHER_API_KEY
+export DB_USER='YOUR_DB_USERNAME'
+export DB_PASS='YOUR_DB_PASSWORD'
+export APP_ID='YOUR_OPENWEATHER_API_KEY'
 ```
 
 **Windows (Command Prompt):**
 ```shell
 set DB_USER=YOUR_DB_USERNAME
 set DB_PASS=YOUR_DB_PASSWORD
-set APP_ID=YOUR_DB_PASSWORD
+set APP_ID=YOUR_OPENWEATHER_API_KEY
 ```
 
 ### 3️⃣ **Build the Project**
