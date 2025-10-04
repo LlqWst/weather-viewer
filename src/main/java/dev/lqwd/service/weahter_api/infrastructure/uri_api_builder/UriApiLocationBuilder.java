@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
 @Component
 @AllArgsConstructor
 public class UriApiLocationBuilder {
@@ -20,6 +21,7 @@ public class UriApiLocationBuilder {
                 .queryParam("q", location)
                 .queryParam("limit", MAX_LIMIT)
                 .queryParam("appid", httpClientConfig.getAppId())
+                .encode()
                 .build()
                 .toUriString();
 
