@@ -90,3 +90,6 @@ startup.bat
 - App available at [http://localhost:8080/weather-viewer/](http://localhost:8080/weather-viewer/)
 
 ---
+
+## 📚 Additional Information
+Проект был завершен в рамках [Java Backend Learning Roadmap](https://zhukovsd.github.io/java-backend-learning-course/projects/weather-viewer/)
